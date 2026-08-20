@@ -191,7 +191,7 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <p style="font-size:12px;color:#64748B">Configura los datos de tu taller piloto. El nombre se usará como <b>marca propia</b>.</p>
 <label>Nombre del taller *</label><input id="obNombre" placeholder="Aluminios Pérez">
 <label>Logo del taller (opcional, PNG/JPG)</label>
-<input id="obLogo" type="file" accept="image/*" onchange="leerLogo(this)">
+<input id="obLogo" type="file" accept="image/*" onchange="leerLogoRaw(this)">
 <div id="obLogoPrev" style="margin:4px 0 10px"></div>
 <div class="row"><div><label>RFC (opcional)</label><input id="obRfc"></div>
 <div><label>Teléfono</label><input id="obTel"></div></div>
@@ -396,6 +396,11 @@ try{var id=cx.getImageData(0,0,w,h2);var d=id.data;for(var i=0;i<d.length;i+=4){
   document.getElementById('obLogoPrev').innerHTML='<img src="'+DB.taller.logo+'" style="max-height:60px;border:1px solid #e2e8f0;border-radius:8px;padding:4px"> <button class="btn small" style="background:#DC2626" onclick="quitarLogo()">Quitar</button>';
   refreshBrand();};
   img.src=r.result;};
+ r.readAsDataURL(f);}
+function leerLogoRaw(inp){var f=inp.files&&inp.files[0];if(!f)return;
+ var r=new FileReader();r.onload=function(){DB.taller=DB.taller||{};DB.taller.logo=r.result;
+  var p=document.getElementById('obLogoPrev');if(p)p.innerHTML='<img src="'+DB.taller.logo+'" style="max-height:60px;border:1px solid #e2e8f0;border-radius:8px;padding:4px"> <button class="btn small" style="background:#DC2626" onclick="quitarLogo()">Quitar</button>';
+  refreshBrand();};
  r.readAsDataURL(f);}
 function quitarLogo(){if(DB.taller)delete DB.taller.logo;
  var p=document.getElementById('obLogoPrev');if(p)p.innerHTML='';refreshBrand();}
