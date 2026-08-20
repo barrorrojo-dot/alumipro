@@ -353,7 +353,7 @@ function normProd(c){if(!c)return{tip:'cor2',lin:'L3',W:1800,H:1200,col:'Natural
  if(c.items&&c.items.length)return c.items[0];
  return{tip:'cor2',lin:'L3',W:1800,H:1200,col:'Natural',zoc:'V',conf:'2H',vidTxt:'Claro 6mm'};}
 
-/* ============ AUTH + MULTI-TENANT ============ */
+/* ============ AUTH + MULTI-TENANT + ROL ============ */
 function login(){ try{
   if(SB){authSignIn();}
   else{ if(!DB.taller){goSafe('onb');}else{go('home');} }
@@ -366,7 +366,10 @@ async function authSignUp(){ var r=await SB.auth.signUp({email:em.value,password
  if(r.error){ if(confirm('No se pudo crear la cuenta ('+r.error.message+'). ¿Continuar en modo local?')){ if(!DB.taller){goSafe('onb');}else{go('home');} } return;} alert('Cuenta creada. Confirma tu correo y pulsa Entrar.'); }
 async function initTenant(){ var u=(await SB.auth.getUser()).data.user;SESSION=u;
  var tu=await SB.from('tenant_users').select('tenant_id').eq('user_id',u.id).maybeSingle();
- if(tu.data){TENANT_ID=tu.data.tenant_id;await loadTenantState();var rr=await SB.from('tenant_users').select('rol').eq('user_id',u.id).maybeSingle();window.ROL=rr.data?rr.data.rol:'owner';refreshBrand();go('home');}
+ if(tu.data){TENANT_ID=tu.data.tenant_id;await loadTenantState();
+  var rr=await SB.from('tenant_users').select('rol').eq('user_id',u.id).maybeSingle();
+  window.ROL=rr.data?rr.data.rol:'owner';
+  refreshBrand();go('home');}
  else{goSafe('onb');} }
 async function loadTenantState(){ var r=await SB.from('tenant_state').select('data').eq('tenant_id',TENANT_ID).maybeSingle();
  if(r.data&&r.data.data){DB=Object.assign({},DB,r.data.data);setCloud(true);} }
@@ -503,7 +506,7 @@ function makePanZoom(wrap){
  wrap.addEventListener('dblclick',function(){fit();});
 }
 
-/* ============ NAV ============ */
+/* ============ NAV (con restricción por rol) ============ */
 function go(s){ if(window.ROL&&window.ROL!=='owner'&&(s=='ajt'||s=='prov'||s=='rep')){alert('Acceso restringido al dueño del taller.');return;}
  document.querySelectorAll('.screen').forEach(function(x){x.classList.remove('active');});
  document.getElementById(s).classList.add('active');
