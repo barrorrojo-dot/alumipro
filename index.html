@@ -89,10 +89,6 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <div class="row">
  <div class="card gcard" onclick="go('cat')"><span class="gicon">🗂</span><b>Catálogo de Productos</b></div>
  <div class="card gcard" onclick="go('cli')"><span class="gicon">👥</span><b>Gestionar Clientes</b></div></div>
-<div class="card"><h2 id="homeCotTitle">COTIZACIÓN</h2>
- <div id="home3d"></div>
- <p class="badge-check" style="text-align:right">✓ DIAGRAMA TÉCNICO INCLUIDO</p>
- <p style="font-size:12px;color:#64748B;text-align:center">Vista de la última cotización · desliza la hoja para simular apertura.</p></div>
 </div>
 
 <div id="cots" class="screen"><div class="card"><h2>📋 Historial de Cotizaciones</h2>
@@ -226,7 +222,6 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <button onclick="go('prov')" id="n-prov">🏭<br>Precios</button>
 <button onclick="go('rep')" id="n-rep">📊<br>Rep</button>
 <button onclick="go('ajt')" id="n-ajt">️<br>Ajustes</button>
-<button onclick="logout()" id="n-salir">🚪<br>Salir</button>
 </nav>
 
 <script>
@@ -360,11 +355,6 @@ function login(){ try{
   else{ if(!DB.taller){goSafe('onb');}else{go('home');} }
  }catch(e){go('home');} }
 function goSafe(s){ if(document.getElementById(s)){go(s);}else{go('home');} }
-function logout(){ try{if(SB)SB.auth.signOut();}catch(e){}
- SESSION=null;TENANT_ID=null;window.ROL=null;setCloud(false);
- document.getElementById('nav').style.display='none';
- document.querySelectorAll('.screen').forEach(function(x){x.classList.remove('active');});
- document.getElementById('lg').classList.add('active'); }
 function signup(){ if(!SB){alert('Supabase no está configurado.');return;} authSignUp(); }
 async function authSignIn(){ var r=await SB.auth.signInWithPassword({email:em.value,password:pw.value});
  if(r.error){ if(confirm('No se pudo conectar ('+r.error.message+'). ¿Continuar en modo local?')){ if(!DB.taller){goSafe('onb');}else{go('home');} } return;} await initTenant(); }
@@ -475,11 +465,7 @@ function renderProv(){
 
 /* ============ LOGO / MARCA ============ */
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function logo(s){return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 2648.45 2645.9">'+
- '<path fill="#A7D9F4" d="M375.03 488.57l4.52 1091.42 -76.99 86.04 0 -1286.15 597.79 249.08 -76.99 45.28 -448.34 -185.67zm1440.14 76.98l-117.75 -4.52 0 1032.53 679.31 0 0 -466.44 -561.56 -561.57zm-131.34 -81.51l4.52 -63.39 167.57 0 652.13 620.42 0 547.98 -79.45 1.08 0 -517.35 -586.27 -588.74 -158.5 0z"/>'+
- '<polygon fill="#247ECC" points="1439.28,293.83 1172.09,293.83 1172.09,1838.12 1172.09,2118.89 1439.28,2118.89 2648.45,2118.89 2648.45,1838.12 1439.28,1838.12"/>'+
- '<path fill="#123964" d="M1253.61 293.83l-81.52 0 0 1544.29 0 280.77 267.19 0 1209.18 0 0 -86.04 -1394.85 0 0 -1739.02zm366.83 -6.81l-81.52 0 0 1184.28 0 280.78 267.2 0 819.69 0 0 -86.05 -1005.37 0 0 -1379.01zm-1452.15 -280.21l902.88 376.16 0 1756.67 -802.79 425.18c-111.9,59.27 -268.39,131.03 -268.39,-88.24l0 -2359.96c0,-73.64 100.32,-138.12 168.29,-109.81zm111.06 265.34l694.76 296.91 9.37 1383.59 -690.42 364.95c-59.28,31.32 -72.65,39.2 -72.76,-47.91l-2.94 -1961.27c-0.05,-34.1 30.65,-49.65 62,-36.26zm836.85 1960.35l-834.69 413.39 1951.68 0c26.67,-5.09 39.69,-37.42 43.6,-88.02l-0.68 -327.07 -1159.91 1.7z"/>'+
- '</svg>';}
+function logo(s){return '<svg width="'+s+'" height="'+(s*0.98)+'" viewBox="1950 0 3000 2950"><path fill="#A7D9F4" d="M2391.25 540.63l5 1207.71 -85.19 95.21 0 -1423.19 661.49 275.62 -85.19 50.1 -496.11 -205.45zm1593.59 85.18l-130.3 -5 0 1142.55 751.69 0 0 -516.14 -621.39 -621.4zm-145.33 -90.2l5 -70.15 185.43 0 721.62 686.53 0 606.37 -87.92 1.2 0 -572.48 -648.74 -651.47 -175.39 0z"/><polygon fill="#247ECC" points="3568.89,325.13 3273.23,325.13 3273.23,2033.97 3273.23,2344.66 3568.89,2344.66 4906.91,2344.66 4906.91,2033.97 3568.89,2033.97"/><path fill="#123964" d="M3363.44 325.13l-90.21 0 0 1708.84 0 310.69 295.66 0 1338.02 0 0 -95.21 -1543.47 0 0 -1924.32zm405.92 -7.53l-90.21 0 0 1310.47 0 310.7 295.67 0 907.03 0 0 -95.22 -1112.5 0 0 -1525.95zm-1606.88 -310.06l999.09 416.24 0 1943.85 -888.32 470.49c-123.83,65.58 -296.99,144.99 -296.99,-97.65l0 -2611.42c0,-81.49 111.01,-152.83 186.23,-121.51zm122.9 293.61l768.78 328.54 10.37 1531.01 -763.99 403.83c-65.59,34.66 -80.39,43.38 -80.52,-53.02l-3.26 -2170.24c-0.05,-37.74 33.92,-54.94 68.61,-40.12zm926.02 2169.23l-923.62 457.44 2159.63 0c29.52,-5.63 43.92,-41.41 48.24,-97.4l-0.75 -361.92 -1283.5 1.88z"/></svg>';}
 function wordmark(s,tag,light){var c1=light?'#FFFFFF':'#0D3966',c2=light?'#7FB3E3':'#2D74A8',c3=light?'#CBD5E1':'#64748B';
  return "<div style=\"font-family:Calibri,'Segoe UI',system-ui,sans-serif;line-height:1.05;text-align:left\"><span style=\"color:"+c1+";font-size:"+s+"px;font-weight:600\">Alumi</span><span style=\"color:"+c2+";font-size:"+s+"px;font-weight:600\">Pro</span>"+(tag?"<div style=\"color:"+c3+";font-size:"+Math.round(s*0.34)+"px;letter-spacing:.4px\">Sistema de Cotización de Ventanas</div>":"")+"</div>";}
 function logoH(h,light){return "<div style=\"display:flex;align-items:center;gap:12px\">"+logo(h)+wordmark(Math.round(h*0.62),true,light)+"</div>";}
@@ -538,10 +524,6 @@ function renderHome(){refreshBrand();
  fecha.textContent=new Date().toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+' · Puebla, México';
  ultCots.innerHTML=DB.cotizaciones.slice(-3).reverse().map(function(c){
   return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e2e8f0;cursor:pointer" onclick="abrirTaller('+c.id+')"><div><b>Cot #'+c.id+' - '+c.cliente+'</b><br><small>'+(c.items?c.items.length:1)+' producto(s)</small></div><span class="tag '+tagEst(c.estado)+'">'+(c.estado=='Liquidada'?'Instalación':c.estado)+'</span></div>';}).join('')||'<p>Sin cotizaciones aún.</p>';
- var last=DB.cotizaciones[DB.cotizaciones.length-1];
- var demo=normProd(last);
- homeCotTitle.textContent='COTIZACIÓN '+tallerName()+' #'+String((last?last.id:54)).padStart(4,'0');
- render3d(demo,document.getElementById('home3d'));}
 
 /* ============ HISTORIAL ============ */
 function renderCots(){var el=document.getElementById('cotsList');
@@ -832,7 +814,6 @@ function renderPlano(cot){var K=cot.K||{items:[]};
  var s='<div id="isoWrap" style="position:relative;overflow:hidden;border:1px solid #e2e8f0;border-radius:8px;background:#fff;height:430px;touch-action:none">'+
  '<div style="transform-origin:0 0;position:absolute;left:0;top:0">'+renderExplo(cot,'e'+(ISO_N++))+'</div>'+
  '<div style="position:absolute;bottom:6px;right:8px;font-size:10px;color:#64748B;background:#ffffffcc;padding:2px 8px;border-radius:6px">☝️ Mueve · pellizca · doble toque ajusta</div></div>'+
- '<h3>🔩 Cortes de perfiles</h3><div style="overflow-x:auto">'+renderCortes()+'</div>'+
  '<div style="overflow-x:auto"><table><tr><th>Perfil</th><th>Cortes</th></tr>'+(K.items||[]).map(function(i){
   return '<tr><td>'+i.n+'</td><td>'+i.d+'</td></tr>';}).join('')+'</table></div>'+
  '<p class="badge-check">✓ DIAGRAMA TÉCNICO INCLUIDO</p>';
