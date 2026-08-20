@@ -516,7 +516,7 @@ function makePanZoom(wrap){
  function fit(){sc=Math.min(wrap.clientWidth/(sw+10),wrap.clientHeight/(sh+10),1);
   tx=Math.max(0,(wrap.clientWidth-sw*sc)/2);ty=Math.max(0,(wrap.clientHeight-sh*sc)/2);apply();}
  fit();
- wrap.addEventListener('pointerdown',function(e){wrap.setPointerCache(e.pointerId);pts[e.pointerId]=[e.clientX,e.clientY];
+ wrap.addEventListener('pointerdown',function(e){wrap.setPointerCapture(e.pointerId);pts[e.pointerId]=[e.clientX,e.clientY];
   var n=Object.keys(pts).length;
   if(n==1){last=[e.clientX,e.clientY];}
   if(n==2){var a=Object.values(pts);pinch0=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);sc0=sc;last=null;}});
