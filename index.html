@@ -392,7 +392,7 @@ function leerLogo(inp){var f=inp.files&&inp.files[0];if(!f)return;
   var cv=document.createElement('canvas');cv.width=w;cv.height=h2;
   cv.getContext('2d').drawImage(img,0,0,w,h2);
   DB.taller=DB.taller||{};DB.taller.logo=cv.toDataURL('image/png');
-  document.getElementById('obLogoPrev').innerHTML='<img src="'+DB.taller.logo+'" style="max-height:60px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:4px"> <button class="btn small" style="background:#DC2626" onclick="quitarLogo()">Quitar</button>';
+  document.getElementById('obLogoPrev').innerHTML='<img src="'+DB.taller.logo+'" style="max-height:60px;border:1px solid #e2e8f0;border-radius:8px;padding:4px"> <button class="btn small" style="background:#DC2626" onclick="quitarLogo()">Quitar</button>';
   refreshBrand();};
   img.src=r.result;};
  r.readAsDataURL(f);}
@@ -405,7 +405,7 @@ function renderOnb(){var t=DB.taller||{};
  obKerf.value=(DB.desc&&DB.desc.kerf)||3.5;obBarra.value=(DB.desc&&DB.desc.largoBarra)||6100;
  obHolg.value=(DB.desc&&DB.desc.holguraMarco)!=null?DB.desc.holguraMarco:20;
  obLogo.value='';
- document.getElementById('obLogoPrev').innerHTML=(t.logo)?'<img src="'+t.logo+'" style="max-height:60px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:4px"> <button class="btn small" style="background:#DC2626" onclick="quitarLogo()">Quitar</button>':'';}
+ document.getElementById('obLogoPrev').innerHTML=(t.logo)?'<img src="'+t.logo+'" style="max-height:60px;border:1px solid #e2e8f0;border-radius:8px;padding:4px"> <button class="btn small" style="background:#DC2626" onclick="quitarLogo()">Quitar</button>':'';}
 function saveOnb(){if(!obNombre.value){alert('Escribe el nombre del taller');return;}
  var logoPrev=(DB.taller&&DB.taller.logo)?DB.taller.logo:null;
  DB.taller={nombre:obNombre.value,rfc:obRfc.value,tel:obTel.value,contacto:obContacto.value,dir:obDir.value,
@@ -494,8 +494,7 @@ function wordmark(s,tag,light){var c1=light?'#FFFFFF':'#0D3966',c2=light?'#7FB3E
 function logoH(h,light){return "<div style=\"display:flex;align-items:center;gap:12px\">"+logo(h)+wordmark(Math.round(h*0.62),true,light)+"</div>";}
 function brandH(h,light){
  if(DB&&DB.taller&&DB.taller.nombre){
-  var c1=light?'#FFFFFF':'#0D3966',c3=light?'#CBD5E1':'#64748B';
-  var lg=(DB.taller.logo)?'<img src="'+DB.taller.logo+'" alt="logo" style="height:'+h+'px;width:auto;max-width:'+Math.round(h*3.2)+'px;object-fit:contain;background:#fff;border-radius:8px;padding:3px">':logo(h);
+  var c1=light?'#FFFFFF':'#0D3966',c3=light?'#CBD5E1':'#64748B';  var lg=(DB.taller.logo)?((light?'<span style="background:#fff;border-radius:10px;padding:4px">':'')+'<img src="'+DB.taller.logo+'" alt="logo" style="height:'+h+'px;width:auto;max-width:'+Math.round(h*3.2)+'px;object-fit:contain;display:block">'+(light?'</span>':'')):logo(h);
   return "<div style=\"display:flex;align-items:center;gap:12px\">"+lg+
   "<div style=\"font-family:Calibri,'Segoe UI',sans-serif;line-height:1.05;text-align:left\"><span style=\"color:"+c1+";font-size:"+Math.round(h*0.62)+"px;font-weight:700\">"+esc(DB.taller.nombre)+"</span><div style=\"color:"+c3+";font-size:"+Math.round(h*0.3)+"px\">Ventanas y Cancelería de Aluminio</div></div></div>";}
  return logoH(h,light);}
