@@ -226,6 +226,7 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <button onclick="go('prov')" id="n-prov">🏭<br>Precios</button>
 <button onclick="go('rep')" id="n-rep">📊<br>Rep</button>
 <button onclick="go('ajt')" id="n-ajt">️<br>Ajustes</button>
+<button onclick="logout()" id="n-salir">🚪<br>Salir</button>
 </nav>
 
 <script>
@@ -359,6 +360,11 @@ function login(){ try{
   else{ if(!DB.taller){goSafe('onb');}else{go('home');} }
  }catch(e){go('home');} }
 function goSafe(s){ if(document.getElementById(s)){go(s);}else{go('home');} }
+function logout(){ try{if(SB)SB.auth.signOut();}catch(e){}
+ SESSION=null;TENANT_ID=null;window.ROL=null;setCloud(false);
+ document.getElementById('nav').style.display='none';
+ document.querySelectorAll('.screen').forEach(function(x){x.classList.remove('active');});
+ document.getElementById('lg').classList.add('active'); }
 function signup(){ if(!SB){alert('Supabase no está configurado.');return;} authSignUp(); }
 async function authSignIn(){ var r=await SB.auth.signInWithPassword({email:em.value,password:pw.value});
  if(r.error){ if(confirm('No se pudo conectar ('+r.error.message+'). ¿Continuar en modo local?')){ if(!DB.taller){goSafe('onb');}else{go('home');} } return;} await initTenant(); }
