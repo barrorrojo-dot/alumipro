@@ -468,11 +468,7 @@ function renderProv(){
 
 /* ============ LOGO ORIGINAL ============ */
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function logo(s){return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 2648.45 2645.9">'+
- '<path fill="#A7D9F4" d="M375.03 488.57l4.52 1091.42 -76.99 86.04 0 -1286.15 597.79 249.08 -76.99 45.28 -448.34 -185.67zm1440.14 76.98l-117.75 -4.52 0 1032.53 679.31 0 0 -466.44 -561.56 -561.57zm-131.34 -81.51l4.52 -63.39 167.57 0 652.13 620.42 0 547.98 -79.45 1.08 0 -517.35 -586.27 -588.74 -158.5 0z"/>'+
- '<polygon fill="#247ECC" points="1439.28,293.83 1172.09,293.83 1172.09,1838.12 1172.09,2118.89 1439.28,2118.89 2648.45,2118.89 2648.45,1838.12 1439.28,1838.12"/>'+
- '<path fill="#123964" d="M1253.61 293.83l-81.52 0 0 1544.29 0 280.77 267.19 0 1209.18 0 0 -86.04 -1394.85 0 0 -1739.02zm366.83 -6.81l-81.52 0 0 1184.28 0 280.78 267.2 0 819.69 0 0 -86.05 -1005.37 0 0 -1379.01zm-1452.15 -280.21l902.88 376.16 0 1756.67 -802.79 425.18c-111.9,59.27 -268.39,131.03 -268.39,-88.24l0 -2359.96c0,-73.64 100.32,-138.12 168.29,-109.81zm111.06 265.34l694.76 296.91 9.37 1383.59 -690.42 364.95c-59.28,31.32 -72.65,39.2 -72.76,-47.91l-2.94 -1961.27c-0.05,-34.1 30.65,-49.65 62,-36.26zm836.85 1960.35l-834.69 413.39 1951.68 0c26.67,-5.09 39.69,-37.42 43.6,-88.02l-0.68 -327.07 -1159.91 1.7z"/>'+
- '</svg>';}
+function logo(s){return '<img src="logo.svg" alt="logo" style="width:'+s+'px;height:'+s+'px;object-fit:contain">';}
 function wordmark(s,tag,light){var c1=light?'#FFFFFF':'#0D3966',c2=light?'#7FB3E3':'#2D74A8',c3=light?'#CBD5E1':'#64748B';
  return "<div style=\"font-family:Calibri,'Segoe UI',system-ui,sans-serif;line-height:1.05;text-align:left\"><span style=\"color:"+c1+";font-size:"+s+"px;font-weight:600\">Alumi</span><span style=\"color:"+c2+";font-size:"+s+"px;font-weight:600\">Pro</span>"+(tag?"<div style=\"color:"+c3+";font-size:"+Math.round(s*0.34)+"px;letter-spacing:.4px\">Sistema de Cotización de Ventanas</div>":"")+"</div>";}
 function logoH(h,light){return "<div style=\"display:flex;align-items:center;gap:12px\">"+logo(h)+wordmark(Math.round(h*0.62),true,light)+"</div>";}
