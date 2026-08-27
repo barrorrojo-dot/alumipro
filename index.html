@@ -155,7 +155,7 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <div id="optBody"></div>
 <button class="btn" onclick="window.print()">🖨 Imprimir Hoja de Taller</button></div></div>
 
-<div id="ped" class="screen"><div class="card"><h2>Pedidos, Pagos e Inventario</h2>
+<div id="ped" class="screen"><div class="card"><h2>Proyectos, Pagos e Inventario</h2>
 <h3>Órdenes de Armado</h3><div id="pedLista"></div>
 <h3>📦 Inventario por Acabado</h3>
 <p style="font-size:12px;color:#64748B">▸ desglose por acabado (♻️ retazos) · ✏️ stock · ＋️ retazo manual.</p>
@@ -821,10 +821,13 @@ function abrirTaller(id){cur=DB.cotizaciones.find(function(c){return c.id==id;})
  go('taller');
  tTitulo.textContent='Cot #'+cur.id+' — '+cur.cliente+' · '+(cur.items?cur.items.length:0)+' producto(s)';
  tEstado.value=cur.estado;
- tDespiece.innerHTML='<table><tr><th>Concepto</th><th>Detalle</th><th>Costo</th></tr>'+((cur.K&&cur.K.items)||[]).map(function(i){return '<tr><td>'+i.n+'</td><td>'+i.d+'</td><td>$'+i.costo.toFixed(0)+'</td></tr>';}).join('')+'</table><p style="font-size:12px">🔧 Vista Taller. El PDF cliente oculta costos.</p>';renderElem();renderFin();}
+ tDespiece.innerHTML='<table><tr><th>Concepto</th><th>Detalle</th><th>Costo</th></tr>'+((cur.K&&cur.K.items)||[]).map(function(i){return '<tr><td>'+i.n+'</td><td>'+i.d+'</td><td>$'+i.costo.toFixed(0)+'</td></tr>';}).join('')+'</table><p style="font-size:12px">🔧 Vista Taller. El PDF cliente oculta costos.</p>';
+ renderElem();renderFin();}
+function setEstado(){cur.estado=tEstado.value;save();}
 function renderElem(){var el=document.getElementById('tElem');if(!el||!cur)return;
- el.innerHTML='<h3>Elementos del proyecto</h3>'+(((cur.items||[]).map(function(it,i){
-  return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #e2e8f0"><div><b>'+(i+1)+'. '+prodName(it)+'</b><br><small>'+it.W+'×'+it.H+'mm · '+it.lin+' · '+it.col+'</small></div><span class="tag '+tagEst(it.estado||cur.estado)+'">'+(it.estado||cur.estado)+'</span></div>';}).join(''))||'<p>Sin elementos.</p>';}
+ var rows=(cur.items||[]).map(function(it,i){
+  return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #e2e8f0"><div><b>'+(i+1)+'. '+prodName(it)+'</b><br><small>'+it.W+'×'+it.H+'mm · '+it.lin+' · '+it.col+'</small></div><span class="tag '+tagEst(it.estado||cur.estado)+'">'+(it.estado||cur.estado)+'</span></div>';}).join('');
+ el.innerHTML='<h3>Elementos del proyecto</h3>'+(rows||'<p>Sin elementos.</p>');}
 function renderFin(){var el=document.getElementById('tFin');if(!el||!cur)return;
  var tot=cur.total||0,pag=cur.pagado||0,saldo=Math.max(0,tot-pag);
  el.innerHTML='<h3>💰 Finanzas</h3><p>Total: <b>$'+tot.toFixed(2)+'</b> · Anticipo/Pagado: <b style="color:#16A34A">$'+pag.toFixed(2)+'</b> · Saldo: <b style="color:#DC2626">$'+saldo.toFixed(2)+'</b></p>';}
@@ -842,7 +845,6 @@ function desgloseMateriales(){if(!cur)return;var agg=aggregate();
 function agregarElemento(){if(!cur)return;cur._edit=true;cCliente.value=cur.cliente;go('cot');}
 function irACorte(){if(!cur)return;var idx=-1;DB.pedidos.forEach(function(p,i){if(p.cotId==cur.id)idx=i;});
  if(idx>=0){lastPedido=idx;planoIdx=0;go('opt');}else{alert('Primero convierte la cotización en Orden de Armado (🏭).');}}
-function setEstado(){cur.estado=tEstado.value;save();}
 function optimizar(cortes,retazos,barra,kerf){barra=barra||((DB.desc&&DB.desc.largoBarra)||6100);kerf=kerf||((DB.desc&&DB.desc.kerf)||3.5);
  var s=(cortes||[]).slice().sort(function(a,b){return b-a;}),bs=[],usados=0;
  s.forEach(function(c){
