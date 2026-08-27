@@ -131,6 +131,17 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <div id="taller" class="screen"><div class="card"><h2 id="tTitulo"></h2>
 <label>Estado</label><select id="tEstado" onchange="setEstado()"><option>Pendiente</option><option>Aprobada</option><option>Rechazada</option><option>En Proceso</option><option>Liquidada</option></select>
 <div id="tDespiece"></div>
+<div id="tElem"></div>
+<div id="tFin"></div>
+<div class="row">
+ <button class="btn small" onclick="regAnticipo()">💵 Registrar anticipo</button>
+ <button class="btn small" onclick="regPago()">💵 Registrar pago</button>
+</div>
+<div class="row">
+ <button class="btn small" onclick="desgloseMateriales()">🧾 Desglose de materiales</button>
+ <button class="btn small" onclick="agregarElemento()">＋ Agregar elemento</button>
+ <button class="btn small" onclick="irACorte()">🪚 Ir a proceso de corte</button>
+</div>
 <button class="btn navy" onclick="convertirOrden()">🏭 Convertir en Orden de Armado</button>
 <button class="btn orange" onclick="exportarPDF()">📄 Exportar PDF Cliente</button>
 <button class="btn" onclick="enviarWhatsApp()">📲 Enviar por WhatsApp</button>
@@ -218,7 +229,7 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <nav id="nav">
 <button onclick="go('home')" id="n-home">🏠<br>Inicio</button>
 <button onclick="go('cots')" id="n-cot">📋<br>Cots</button>
-<button onclick="go('ped')" id="n-ped">🛒<br>Pedidos</button>
+<button onclick="go('ped')" id="n-ped">📦<br>Proyectos</button>
 <button onclick="go('prov')" id="n-prov">🏭<br>Precios</button>
 <button onclick="go('rep')" id="n-rep">📊<br>Rep</button>
 <button onclick="go('ajt')" id="n-ajt">️<br>Ajustes</button>
@@ -527,12 +538,12 @@ function renderHome(){refreshBrand();
  saludo.textContent='¡Bienvenido'+(window.ROL?' ('+window.ROL+')':'')+'! · '+tallerName();
  fecha.textContent=new Date().toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+' · Puebla, México';
  ultCots.innerHTML=DB.cotizaciones.slice(-3).reverse().map(function(c){
-  return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e2e8f0;cursor:pointer" onclick="abrirTaller('+c.id+')"><div><b>Cot #'+c.id+' - '+c.cliente+'</b><br><small>'+(c.items?c.items.length:1)+' producto(s)</small></div><span class="tag '+tagEst(c.estado)+'">'+(c.estado=='Liquidada'?'Instalación':c.estado)+'</span></div>';}).join('')||'<p>Sin cotizaciones aún.</p>';}
+  return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e2e8f0;cursor:pointer" onclick="abrirTaller('+c.id+')"><div><b>'+((c.estado=='Pendiente'||c.estado=='Rechazada')?'Cot':'Proyecto')+' #'+c.id+' - '+c.cliente+'</b><br><small>'+(c.items?c.items.length:1)+' producto(s)</small></div><span class="tag '+tagEst(c.estado)+'">'+(c.estado=='Liquidada'?'Instalación':c.estado)+'</span></div>';}).join('')||'<p>Sin cotizaciones aún.</p>';}
 
 function renderCots(){var el=document.getElementById('cotsList');
  el.innerHTML=DB.cotizaciones.slice().reverse().map(function(c){
   return '<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #e2e8f0">'+
-  '<div style="flex:1;cursor:pointer" onclick="abrirTaller('+c.id+')"><b>Cot #'+c.id+' · '+c.cliente+'</b><br>'+
+  '<div style="flex:1;cursor:pointer" onclick="abrirTaller('+c.id+')"><b>'+((c.estado=='Pendiente'||c.estado=='Rechazada')?'Cot':'Proyecto')+' #'+c.id+' · '+c.cliente+'</b><br>'+
   '<small>'+(c.items?c.items.length:1)+' producto(s) · $'+(c.total||0).toFixed(2)+'</small></div>'+
   '<select onchange="setEstCot('+c.id+',this.value)" style="width:auto;margin:0">'+
   ['Pendiente','Aprobada','Rechazada','En Proceso','Liquidada'].map(function(o){return '<option'+(o==c.estado?' selected':'')+'>'+o+'</option>';}).join('')+'</select>'+
@@ -632,6 +643,7 @@ function delItem(i){cur.items.splice(i,1);renderProducts();renderTotals();}
 function chgCant(i,d){cur.items[i].cant=Math.max(1,cur.items[i].cant+d);renderProducts();renderTotals();}
 function guardarCot(){if(!cur||!cur.items.length){alert('Agrega al menos un producto con "＋ Agregar producto".');return;}
  cur.cliente=cCliente.value||cur.cliente||'Cliente';
+ if(cur._edit){var ag=aggregate();cur.K={items:flattenItems(),cortes:ag.cortes,vidM2:ag.vidM2,area:0};var f1=cur.items[0];cur.tip=f1.tip;cur.lin=f1.lin;cur.W=f1.W;cur.H=f1.H;cur.col=f1.col;cur.vidTxt=f1.vidTxt;delete cur._edit;save();abrirTaller(cur.id);return;}
  var f0=cur.items[0];cur.tip=f0.tip;cur.lin=f0.lin;cur.W=f0.W;cur.H=f0.H;cur.col=f0.col;cur.vidTxt=f0.vidTxt;
  var agg=aggregate();
  cur.K={items:flattenItems(),cortes:agg.cortes,vidM2:agg.vidM2,area:0};
@@ -809,7 +821,27 @@ function abrirTaller(id){cur=DB.cotizaciones.find(function(c){return c.id==id;})
  go('taller');
  tTitulo.textContent='Cot #'+cur.id+' — '+cur.cliente+' · '+(cur.items?cur.items.length:0)+' producto(s)';
  tEstado.value=cur.estado;
- tDespiece.innerHTML='<table><tr><th>Concepto</th><th>Detalle</th><th>Costo</th></tr>'+((cur.K&&cur.K.items)||[]).map(function(i){return '<tr><td>'+i.n+'</td><td>'+i.d+'</td><td>$'+i.costo.toFixed(0)+'</td></tr>';}).join('')+'</table><p style="font-size:12px">🔧 Vista Taller. El PDF cliente oculta costos.</p>';}
+ tDespiece.innerHTML='<table><tr><th>Concepto</th><th>Detalle</th><th>Costo</th></tr>'+((cur.K&&cur.K.items)||[]).map(function(i){return '<tr><td>'+i.n+'</td><td>'+i.d+'</td><td>$'+i.costo.toFixed(0)+'</td></tr>';}).join('')+'</table><p style="font-size:12px">🔧 Vista Taller. El PDF cliente oculta costos.</p>';renderElem();renderFin();}
+function renderElem(){var el=document.getElementById('tElem');if(!el||!cur)return;
+ el.innerHTML='<h3>Elementos del proyecto</h3>'+(((cur.items||[]).map(function(it,i){
+  return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #e2e8f0"><div><b>'+(i+1)+'. '+prodName(it)+'</b><br><small>'+it.W+'×'+it.H+'mm · '+it.lin+' · '+it.col+'</small></div><span class="tag '+tagEst(it.estado||cur.estado)+'">'+(it.estado||cur.estado)+'</span></div>';}).join(''))||'<p>Sin elementos.</p>';}
+function renderFin(){var el=document.getElementById('tFin');if(!el||!cur)return;
+ var tot=cur.total||0,pag=cur.pagado||0,saldo=Math.max(0,tot-pag);
+ el.innerHTML='<h3>💰 Finanzas</h3><p>Total: <b>$'+tot.toFixed(2)+'</b> · Anticipo/Pagado: <b style="color:#16A34A">$'+pag.toFixed(2)+'</b> · Saldo: <b style="color:#DC2626">$'+saldo.toFixed(2)+'</b></p>';}
+function regAnticipo(){if(!cur)return;var m=prompt('Monto del anticipo:');if(!m||+m<=0)return;
+ cur.pagos=cur.pagos||[];cur.pagos.push({monto:+m,tipo:'anticipo',fecha:new Date().toISOString()});
+ cur.pagado=(cur.pagado||0)+ +m;if(cur.estado=='Pendiente')cur.estado='Aprobada';save();abrirTaller(cur.id);}
+function regPago(){if(!cur)return;var m=prompt('Monto del pago:');if(!m||+m<=0)return;
+ cur.pagos=cur.pagos||[];cur.pagos.push({monto:+m,tipo:'pago',fecha:new Date().toISOString()});
+ cur.pagado=(cur.pagado||0)+ +m;if((cur.pagado||0)>=(cur.total||0))cur.estado='Liquidada';save();abrirTaller(cur.id);}
+function desgloseMateriales(){if(!cur)return;var agg=aggregate();
+ var h='<h3>🧾 Materiales del proyecto</h3><table><tr><th>Perfil</th><th>Tramos (mm)</th></tr>';
+ agg.cortes.forEach(function(c){h+='<tr><td>'+c.n+'</td><td>'+c.cuts.join(' + ')+'</td></tr>';});
+ h+='</table><h4>Herrajes / vidrio</h4><ul>'+agg.herr.map(function(x){return '<li>'+x.n+' × '+x.un+'</li>';}).join('')+'</ul>';
+ document.getElementById('tDespiece').innerHTML=h;}
+function agregarElemento(){if(!cur)return;cur._edit=true;cCliente.value=cur.cliente;go('cot');}
+function irACorte(){if(!cur)return;var idx=-1;DB.pedidos.forEach(function(p,i){if(p.cotId==cur.id)idx=i;});
+ if(idx>=0){lastPedido=idx;planoIdx=0;go('opt');}else{alert('Primero convierte la cotización en Orden de Armado (🏭).');}}
 function setEstado(){cur.estado=tEstado.value;save();}
 function optimizar(cortes,retazos,barra,kerf){barra=barra||((DB.desc&&DB.desc.largoBarra)||6100);kerf=kerf||((DB.desc&&DB.desc.kerf)||3.5);
  var s=(cortes||[]).slice().sort(function(a,b){return b-a;}),bs=[],usados=0;
