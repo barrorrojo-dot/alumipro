@@ -177,7 +177,7 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <div id="rep" class="screen"><div class="card"><h2>Reportes</h2><div id="repBody"></div></div></div>
 
 <div id="cat" class="screen"><div class="card"><h2>🗂 Catálogo de Productos</h2>
-<div id="catProds"></div><h3>Perfiles por línea</h3><div id="catPerfiles"></div><h3>Vidrios</h3><div id="catVidrios"></div>
+<div id="catProds"></div>
 <button class="btn small" onclick="go('home')">← Volver</button></div></div>
 
 <div id="cli" class="screen"><div class="card"><h2>👥 Gestionar Clientes</h2>
@@ -210,10 +210,9 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 
 <div id="ajt" class="screen"><div class="card"><h2>Ajustes — Motor de Recetas y Descuentos</h2>
 <p style="font-size:12px;color:#64748B"><b>"a"</b>=ancho perfil · <b>desc</b>=descuentos mm · <b>kerf</b>=3.5 · <b>largoBarra</b>=6100 · <b>holguraMarco</b>=holgura por lado HUECO→LUZ.</p>
-<label>Precios y margen (JSON)</label><textarea id="ajPrecios" rows="5"></textarea>
-<label>Descuentos / kerf / holgura (JSON)</label><textarea id="ajDesc" rows="4"></textarea>
-<label>Recetas de despiece (JSON)</label><textarea id="ajRecetas" rows="16"></textarea>
-<button class="btn" onclick="guardarAjustes()">💾 Guardar cambios</button>
+<div id="ajForm"></div>
+<h3>Recetas de despiece (avanzado)</h3><textarea id="ajRecetas" rows="8"></textarea>
+<button class="btn" onclick="guardarAjustes()">💾 Guardar recetas</button>
 <button class="btn orange" onclick="go('onb')">🏭 Configurar Taller (Onboarding)</button></div></div>
 
 <div id="pdfCliente"></div>
@@ -567,7 +566,7 @@ function setEstCot(id,v){var c=DB.cotizaciones.find(function(x){return x.id==id;
 
 /* ============ CAT/CLI ============ */
 function renderCat(){catProds.innerHTML=Object.entries(DB.recetas).map(function(e){
- return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #e2e8f0"><b>'+e[1].nombre+'</b><button class="btn small" onclick="cTip.value=\''+e[0]+'\';go(\'cot\');calc();">Cotizar</button></div>';}).join('');
+ return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #e2e8f0"><b>'+e[1].nombre+'</b><button class="btn small" onclick="cTip.value=\''+e[0]+'\';go(\'cot\');calc();">Cotizar</button></div>';}).join('');}
 }
 function renderCli(){cliList.innerHTML=(DB.clientes||[]).map(function(c,i){
  var docs=(DB.cotizaciones||[]).filter(function(x){return x.cliente==c.n;});
@@ -952,9 +951,15 @@ function pago(id){var c=DB.cotizaciones.find(function(x){return x.id==id;});if(!
 function renderRep(){var t=DB.cotizaciones.reduce(function(a,c){return a+(c.total||0);},0),liq=DB.cotizaciones.filter(function(c){return c.estado=='Liquidada';}).length;
  var bajos=0,ret=0;for(var k in DB.inv)(DB.inv[k]||[]).forEach(function(i){var tot=0,mint=0;Object.keys(i.st).forEach(function(q){tot+=i.st[q].s;mint+=i.st[q].min;});if(tot<mint)bajos++;ret+=(i.retazos||[]).length;});
  repBody.innerHTML='<p>Cotizaciones: <b>'+DB.cotizaciones.length+'</b> · Monto: <b>$'+t.toFixed(0)+'</b><br>Liquidadas: <b>'+liq+'</b> · Órdenes: <b>'+DB.pedidos.length+'</b><br>♻️ Retazos: <b>'+ret+'</b><br>⚠️ Bajo mínimo: <b>'+bajos+'</b></p>';}
-function renderAjt(){ajPrecios.value=JSON.stringify(DB.precios,null,1);ajDesc.value=JSON.stringify(DB.desc||{},null,1);ajRecetas.value=JSON.stringify(DB.recetas,null,1);}
-function guardarAjustes(){try{DB.precios=JSON.parse(ajPrecios.value);DB.desc=JSON.parse(ajDesc.value);DB.recetas=JSON.parse(ajRecetas.value);save();alert('✔ Guardado');}catch(e){alert('JSON inválido');}}
-
+function renderAjt(){var h='<h3>Precios y margen</h3>'+campos(DB.precios,'precios')+
+ '<h3>Descuentos / kerf / holgura</h3>'+campos(DB.desc,'desc');
+ document.getElementById('ajForm').innerHTML=h;
+ ajRecetas.value=JSON.stringify(DB.recetas,null,1);}
+function campos(obj,grp){var s='';for(var k in obj){if(typeof obj[k]=='object')continue;
+ s+='<div class="row"><div><label>'+k+'</label><input type="number" step="any" value="'+obj[k]+'" onchange="setAjuste(\''+grp+'\',\''+k+'\',this.value)"></div></div>';}
+ return s;}
+function setAjuste(grp,k,v){DB[grp][k]=+v;save();}
+function guardarAjustes(){try{DB.recetas=JSON.parse(ajRecetas.value);save();alert('✔ Guardado');}catch(e){alert('JSON de recetas inválido');}}
 /* ============ ARRANQUE ============ */
 try{renderHome();}catch(e){console.error(e);}
 cloudLoad(function(){try{refreshBrand();renderHome();}catch(e){}});
