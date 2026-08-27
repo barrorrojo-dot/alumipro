@@ -84,7 +84,6 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
  <div class="card"><h3>Mis Últimas Cotizaciones</h3><div id="ultCots"></div></div>
  <div class="card">
   <button class="btn" onclick="go('cot')">🪟＋ Crear Nueva Cotización</button>
-  <button class="btn" onclick="go('opt')">🪚 Optimización de Corte</button>
   <button class="btn" onclick="go('ped')">📦 Inventario</button></div></div>
 <div class="row">
  <div class="card gcard" onclick="go('cat')"><span class="gicon">🗂</span><b>Catálogo de Productos</b></div>
@@ -190,6 +189,7 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <div id="onb" class="screen"><div class="card"><h2>🏭 Configurar Taller (Onboarding)</h2>
 <p style="font-size:12px;color:#64748B">Configura los datos de tu taller piloto. El nombre se usará como <b>marca propia</b>.</p>
 <label>Nombre del taller *</label><input id="obNombre" placeholder="Aluminios Pérez">
+<label>Lema / giro (texto bajo el nombre)</label><input id="obTagline" placeholder="Ventanas y Cancelería de Aluminio">
 <label>Logo del taller (opcional, PNG/JPG)</label>
 <input id="obLogo" type="file" accept="image/*" onchange="leerLogoRaw(this)">
 <div id="obLogoPrev" style="margin:4px 0 10px"></div>
@@ -406,7 +406,7 @@ function quitarLogo(){if(DB.taller)delete DB.taller.logo;
  var p=document.getElementById('obLogoPrev');if(p)p.innerHTML='';refreshBrand();}
 function tallerName(){return (DB.taller&&DB.taller.nombre)?DB.taller.nombre:'AlumiPro';}
 function renderOnb(){var t=DB.taller||{};
- obNombre.value=t.nombre||'';obRfc.value=t.rfc||'';obTel.value=t.tel||'';obContacto.value=t.contacto||'';obDir.value=t.dir||'';
+ obNombre.value=t.nombre||'';obTagline.value=t.tagline||'';obRfc.value=t.rfc||'';obTel.value=t.tel||'';obContacto.value=t.contacto||'';obDir.value=t.dir||'';
  obPlan.value=t.plan||'Piloto';obSerie.value=t.serie||'L3';obAcab.value=t.acabado||'Natural';
  obKerf.value=(DB.desc&&DB.desc.kerf)||3.5;obBarra.value=(DB.desc&&DB.desc.largoBarra)||6100;
  obHolg.value=(DB.desc&&DB.desc.holguraMarco)!=null?DB.desc.holguraMarco:20;
@@ -415,7 +415,7 @@ function renderOnb(){var t=DB.taller||{};
 function saveOnb(){if(!obNombre.value){alert('Escribe el nombre del taller');return;}
  var logoPrev=(DB.taller&&DB.taller.logo)?DB.taller.logo:null;
  DB.taller={nombre:obNombre.value,rfc:obRfc.value,tel:obTel.value,contacto:obContacto.value,dir:obDir.value,
-  plan:obPlan.value,serie:obSerie.value,acabado:obAcab.value,alta:new Date().toISOString()};
+  plan:obPlan.value,serie:obSerie.value,acabado:obAcab.value,tagline:obTagline.value,alta:new Date().toISOString()};
  if(logoPrev)DB.taller.logo=logoPrev;
  DB.desc=Object.assign({},DB.desc,{kerf:+obKerf.value||3.5,largoBarra:+obBarra.value||6100,holguraMarco:+obHolg.value||20});
  save();refreshBrand();
@@ -502,7 +502,7 @@ function brandH(h,light){
  if(DB&&DB.taller&&DB.taller.nombre){
   var c1=light?'#FFFFFF':'#0D3966',c3=light?'#CBD5E1':'#64748B';  var lg=(DB.taller.logo)?((light?'<span style="background:#fff;border-radius:10px;padding:4px">':'')+'<img src="'+DB.taller.logo+'" alt="logo" style="height:'+h+'px;width:auto;max-width:'+Math.round(h*3.2)+'px;object-fit:contain;display:block">'+(light?'</span>':'')):logo(h);
   return "<div style=\"display:flex;align-items:center;gap:12px\">"+lg+
-  "<div style=\"font-family:Calibri,'Segoe UI',sans-serif;line-height:1.05;text-align:left\"><span style=\"color:"+c1+";font-size:"+Math.round(h*0.62)+"px;font-weight:700\">"+esc(DB.taller.nombre)+"</span><div style=\"color:"+c3+";font-size:"+Math.round(h*0.3)+"px\">Ventanas y Cancelería de Aluminio</div></div></div>";}
+  "<div style=\"font-family:Calibri,'Segoe UI',sans-serif;line-height:1.05;text-align:left\"><span style=\"color:"+c1+";font-size:"+Math.round(h*0.62)+"px;font-weight:700\">"+esc(DB.taller.nombre)+"</span><div style=\"color:"+c3+";font-size:"+Math.round(h*0.3)+"px\">"+(DB.taller.tagline||'Ventanas y Cancelería de Aluminio')+"</div></div></div>";}
  return logoH(h,light);}
 function refreshBrand(){try{document.getElementById('logoLogin').innerHTML=logoH(88,false);
  var hl=document.getElementById('homeLogo');if(hl)hl.innerHTML=brandH(84,false);}catch(e){}}
@@ -568,10 +568,12 @@ function setEstCot(id,v){var c=DB.cotizaciones.find(function(x){return x.id==id;
 /* ============ CAT/CLI ============ */
 function renderCat(){catProds.innerHTML=Object.entries(DB.recetas).map(function(e){
  return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #e2e8f0"><b>'+e[1].nombre+'</b><button class="btn small" onclick="cTip.value=\''+e[0]+'\';go(\'cot\');calc();">Cotizar</button></div>';}).join('');
- catPerfiles.innerHTML='<table><tr><th>Perfil</th><th>Unidad</th></tr>'+(DB.inv.perfiles||[]).map(function(p){return '<tr><td>'+p.n+'</td><td>'+p.u+'</td></tr>';}).join('')+'</table>';
- catVidrios.innerHTML='<table><tr><th>Vidrio</th><th>$/m²</th></tr>'+(DB.inv.vidrios||[]).map(function(v){return '<tr><td>'+v.n+'</td><td>$'+v.p+'</td></tr>';}).join('')+'</table>';}
+}
 function renderCli(){cliList.innerHTML=(DB.clientes||[]).map(function(c,i){
- return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e2e8f0"><div><b>'+c.n+'</b><br><small>📞 '+(c.t||'—')+' · 📍 '+(c.d||'—')+'</small></div><button class="btn small" style="background:#DC2626" onclick="DB.clientes.splice('+i+',1);save();renderCli();">🗑</button></div>';}).join('')||'<p>Sin clientes.</p>';}
+ var docs=(DB.cotizaciones||[]).filter(function(x){return x.cliente==c.n;});
+ var dl=docs.map(function(x){var esProy=(x.estado=='Aprobada'||x.estado=='En Proceso'||x.estado=='Liquidada');
+  return '<div style="padding:3px 0;font-size:12px">'+(esProy?'📦 Proyecto':'📋 Cotización')+' #'+x.id+' · '+x.estado+' · $'+(x.total||0).toFixed(0)+'</div>';}).join('')||'<small>Sin cotizaciones.</small>';
+ return '<div style="padding:8px 0;border-bottom:1px solid #e2e8f0"><div style="display:flex;justify-content:space-between"><div><b>'+c.n+'</b><br><small>📞 '+(c.t||'—')+' · 📍 '+(c.d||'—')+'</small></div><button class="btn small" style="background:#DC2626" onclick="DB.clientes.splice('+i+',1);save();renderCli();">🗑</button></div><div style="margin-top:6px;background:#F8FAFC;border-radius:8px;padding:6px">'+dl+'</div></div>';}).join('')||'<p>Sin clientes.</p>';}
 function addCliente(){if(!cliN.value)return;DB.clientes=DB.clientes||[];DB.clientes.push({n:cliN.value,t:cliT.value,d:cliD.value});save();cliN.value=cliT.value=cliD.value='';renderCli();}
 
 /* ============ KITS ============ */
