@@ -22,7 +22,7 @@ function renderInst(){var I=getInst();
  document.getElementById('instInfo').innerHTML='Proyecto #'+cur.id+' · '+cur.cliente+' · Estado: <b>'+cur.estado+'</b> · Saldo: <b style="color:#DC2626">$'+Math.max(0,(cur.total||0)-(cur.pagado||0)).toFixed(2)+'</b>';
  document.getElementById('instFecha').value=I.fecha||'';
  document.getElementById('instCheck').innerHTML=I.check.map(function(c,i){return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #e2e8f0"><button class="btn small" style="'+(c.done?'background:#16A34A':'')+'" onclick="toggleCheck('+i+')">'+(c.done?'✔':'○')+'</button><div>'+c.t+'</div></div>';}).join('');
- document.getElementById('instFotos').innerHTML=(I.fotos||[]).map(function(f,i){return '<img src="'+f+'" style="width:70px;height:70px;object-fit:cover;border-radius:8px;border:1px solid #e2e8f0">';}).join('')||'<small>Sin fotos.</small>';
+ document.getElementById('instFotos').innerHTML=(I.fotos||[]).map(function(f){return '<img src="'+f+'" style="width:70px;height:70px;object-fit:cover;border-radius:8px;border:1px solid #e2e8f0">';}).join('')||'<small>Sin fotos.</small>';
  document.getElementById('instFirmaPrev').innerHTML=I.firma?'<img src="'+I.firma+'" style="max-height:80px;background:#fff;border:1px solid #e2e8f0;border-radius:8px">':'';}
 function setInstFecha(){var I=getInst();I.fecha=document.getElementById('instFecha').value;save();}
 function toggleCheck(i){var I=getInst();I.check[i].done=!I.check[i].done;save();renderInst();}
