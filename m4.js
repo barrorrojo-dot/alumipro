@@ -1,3 +1,7 @@
+(function(){var t=document.getElementById('taller');if(t){var card=t.querySelector('.card');
+ var row=document.createElement('div');row.className='row';
+ row.innerHTML='<button class="btn" onclick="abrirInst()">🧰 Instalación y entrega</button>';
+ var ref=card.querySelector('.btn.navy');card.insertBefore(row,ref);}})();
 (function(){var d=document.createElement('div');d.id='inst';d.className='screen';d.innerHTML='<div class="card"><h2>🧰 Instalación y entrega</h2>'+
 '<p id="instInfo"></p>'+
 '<label>Fecha de visita</label><input id="instFecha" type="date" onchange="setInstFecha()">'+
