@@ -1,7 +1,8 @@
-(function(){var t=document.getElementById('taller');if(t){var card=t.querySelector('.card');
+(function(){function addBtn(id){var t=document.getElementById(id);if(!t)return;var card=t.querySelector('.card');
  var row=document.createElement('div');row.className='row';
  row.innerHTML='<button class="btn" onclick="abrirInst()">🧰 Instalación y entrega</button>';
- var ref=card.querySelector('.btn.navy');card.insertBefore(row,ref);}})();
+ var ref=card.querySelector('.btn.navy');card.insertBefore(row,ref);}
+ addBtn('taller');addBtn('ord');})();
 (function(){var d=document.createElement('div');d.id='inst';d.className='screen';d.innerHTML='<div class="card"><h2>🧰 Instalación y entrega</h2>'+
 '<p id="instInfo"></p>'+
 '<label>Fecha de visita</label><input id="instFecha" type="date" onchange="setInstFecha()">'+
@@ -17,7 +18,7 @@
 document.body.appendChild(d);})();
 var CHECK_DEF=['Verificar medidas y nivel','Fijar marco y asegurar','Colocar hojas y ajustar','Instalar vidrio y calzar','Colocar herrajes y probar','Sellado y limpieza final','Firma y entrega'];
 function getInst(){if(!cur.inst)cur.inst={fecha:'',check:CHECK_DEF.map(function(t){return{t:t,done:false};}),fotos:[],firma:null};return cur.inst;}
-function abrirInst(){if(!cur)return;go('inst');renderInst();initFirma();}
+function abrirInst(){if(document.getElementById('ord').classList.contains('active')&&curOrden!=null){  var p=DB.pedidos[curOrden];var c=p&&DB.cotizaciones.find(function(x){return x.id==p.cotId;});if(c)cur=c;}  if(!cur)return;go('inst');renderInst();initFirma();}
 function renderInst(){var I=getInst();
  document.getElementById('instInfo').innerHTML='Proyecto #'+cur.id+' · '+cur.cliente+' · Estado: <b>'+cur.estado+'</b> · Saldo: <b style="color:#DC2626">$'+Math.max(0,(cur.total||0)-(cur.pagado||0)).toFixed(2)+'</b>';
  document.getElementById('instFecha').value=I.fecha||'';
