@@ -77,12 +77,12 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 
 <div id="home" class="screen">
 <div style="display:flex;justify-content:center;margin:4px 0" id="homeLogo"></div>
-<div class="card"><h2 id="saludo">¡Bienvenido!</h2><p id="fecha" style="color:#64748B"></p></div>
+<div class="card"><h2 id="saludo">¡Bienvenido!</h2><p id="fecha" style="color:#64748B"></p> <button class="btn small" id="btnMemb" style="display:none" onclick="abrirMemb()">👥 Miembros e invitaciones</button></div>
 <div class="row">
  <div class="card"><h3>Mis Últimas Cotizaciones</h3><div id="ultCots"></div></div>
  <div class="card">
   <button class="btn" onclick="go('cot')">🪟＋ Crear Nueva Cotización</button>
-  <button class="btn" onclick="go('ped')">📦 Inventario</button>   <button class="btn small" id="btnMemb" style="display:none" onclick="abrirMemb()">👥 Miembros e invitaciones</button></div></div>
+  <button class="btn" onclick="go('ped')">📦 Inventario</button></div></div>
 <div class="row">
  <div class="card gcard" onclick="go('cat')"><span class="gicon">🗂</span><b>Catálogo de Productos</b></div>
  <div class="card gcard" onclick="go('cli')"><span class="gicon">👥</span><b>Gestionar Clientes</b></div></div>
