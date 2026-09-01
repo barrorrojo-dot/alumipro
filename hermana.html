@@ -1,10 +1,6 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Mi Proyecto</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-.step{display:flex;gap:10px;align-items:center;padding:4px 0;color:#94A3B8;font-size:14px}
-.step.on{color:#0F172A;font-weight:700}
-.dot{width:12px;height:12px;border-radius:50%;background:#CBD5E1;flex:none}
-.step.on .dot{background:#16A34A}
 <style>
 body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:#F1F5F9;color:#0F172A}
 .wrap{max-width:560px;margin:0 auto;padding:16px}
@@ -17,9 +13,13 @@ table{width:100%;border-collapse:collapse;font-size:13px}td,th{border-bottom:1px
 label{font-size:13px;color:#475569}
 input,select,textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;margin:4px 0 10px}
 .row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}
+.step{display:flex;gap:10px;align-items:center;padding:4px 0;color:#94A3B8;font-size:14px}
+.step.on{color:#0F172A;font-weight:700}
+.dot{width:12px;height:12px;border-radius:50%;background:#CBD5E1;flex:none}
+.step.on .dot{background:#16A34A}
 </style></head><body><div class="wrap">
 <div id="head" class="card" style="text-align:center"></div>
-<div id="" class="card"></div>
+<div id="proy" class="card"></div>
 <div id="estado" class="card"></div>
 <div id="cotiz" class="card"></div>
 <div id="poliza" class="card"></div>
@@ -28,8 +28,6 @@ input,select,textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-ra
 </div><script>
 var SB=supabase.createClient('https://faxajvtlbyazkmgtkjwe.supabase.co','sb_publishable_qRgmRIBfIl7kjBDQk7iBnQ_JwVuQCfr');
 var token=new URLSearchParams(location.search).get('token');
-   var pasos=['Pendiente','Aprobada','En Proceso','En instalación','Liquidada'];var idx=pasos.indexOf(c.estado);if(idx<0)idx=2;
-  var tl='<div style="margin:8px 0">'+pasos.map(function(p,i){return '<div class="step'+(i<=idx?' on':'')+'"><span class="dot"></span>'+p+'</div>';}).join('')+'</div>';
 if(!token){document.getElementById('proy').innerHTML='<p>Enlace no válido.</p>';}
 else SB.from('shares').select('*').eq('token',token).maybeSingle().then(function(r){
  if(!r.data){document.getElementById('proy').innerHTML='<p>Enlace no encontrado.</p>';return;}
@@ -37,6 +35,8 @@ else SB.from('shares').select('*').eq('token',token).maybeSingle().then(function
  document.title=(T.nombre||'AlumiPro');
  document.getElementById('head').innerHTML=(T.logo?'<img src="'+T.logo+'" style="max-height:70px">':'')+'<h2>'+(T.nombre||'')+'</h2><small>'+(T.tagline||'')+'</small>';
  if(D.cot){var c=D.cot;
+  var pasos=['Pendiente','Aprobada','En Proceso','En instalación','Liquidada'];var idx=pasos.indexOf(c.estado);if(idx<0)idx=2;
+  var tl='<div style="margin:8px 0">'+pasos.map(function(p,i){return '<div class="step'+(i<=idx?' on':'')+'"><span class="dot"></span>'+p+'</div>';}).join('')+'</div>';
   document.getElementById('proy').innerHTML=tl+'<h3>Proyecto #'+c.id+' · '+c.cliente+'</h3><span class="tag">'+c.estado+'</span>'+
    '<table><tr><th>Elemento</th><th>Medida</th><th>Estatus</th></tr>'+c.items.map(function(i){return '<tr><td>'+i.n+'</td><td>'+i.med+'</td><td>'+i.est+'</td></tr>';}).join('')+'</table>'+
    '<p>Avance de corte: <b>'+(D.avance.corte||'—')+'</b> · Orden: '+(D.avance.orden||'—')+'</p>'+
