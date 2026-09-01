@@ -19,9 +19,15 @@ function aplicarNav(){var R=window.ROLES||['owner'];var isO=R.includes('owner');
 function canjearCodigo(){var code=prompt('Código de invitación:');if(!code)return;
  SB.from('invites').select('*').eq('code',code.trim()).eq('activo',true).maybeSingle().then(function(r){
   if(!r.data){alert('Código no válido o ya usado.');return;}
-  SB.from('tenant_users').insert({user_id:SESSION.id,tenant_id:r.data.tenant_id,rol:r.data.roles}).then(function(ins){
-   if(ins.error){alert('Error: '+ins.error.message);return;}
-   SB.from('invites').update({activo:false}).eq('id',r.data.id).then(function(){location.reload();});});});}
+  var tid=r.data.tenant_id,roles=r.data.roles;
+  SB.from('tenant_users').select('user_id').eq('user_id',SESSION.id).maybeSingle().then(function(ex){
+   var op=ex.data
+     ? SB.from('tenant_users').update({tenant_id:tid,rol:roles}).eq('user_id',SESSION.id)
+     : SB.from('tenant_users').insert({user_id:SESSION.id,tenant_id:tid,rol:roles});
+   op.then(function(res){
+     if(res.error){alert('Error: '+res.error.message);return;}
+     SB.from('invites').update({activo:false}).eq('id',r.data.id).then(function(){location.reload();});});
+  });});}
 function abrirMemb(){go('memb');renderMemb();}
 function renderMemb(){SB.from('tenant_users').select('user_id,rol').then(function(m){
  var rows=(m.data||[]).map(function(u){return '<tr><td>'+u.user_id.slice(0,8)+'…</td><td>'+u.rol+'</td><td><button class="btn small" onclick="editarRoles(\''+u.user_id+'\',\''+u.rol+'\')">✏️ Roles</button> <button class="btn small" style="background:#DC2626" onclick="quitarMiembro(\''+u.user_id+'\')">🗑</button></td></tr>';}).join('');
