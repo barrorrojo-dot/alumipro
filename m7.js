@@ -4,7 +4,7 @@
 (function(){var d=document.createElement('div');d.id='memb';d.className='screen';
  d.innerHTML='<div class="card"><h2>👥 Miembros e invitaciones</h2><div id="membBody"></div><button class="btn small" onclick="go(\'home\')">← Volver</button></div>';
  document.body.appendChild(d);})();
-var _rT=setInterval(function(){if(window.SESSION){clearInterval(_rT);cargarRoles();}},500);
+setInterval(function(){if(window.SESSION)cargarRoles();},4000);
 function cargarRoles(){if(!SB||!SESSION)return;
  SB.from('tenant_users').select('rol').eq('user_id',SESSION.id).maybeSingle().then(function(r){
   window.ROLES=r.data?(r.data.rol||'owner').split(',').map(function(s){return s.trim();}):['owner'];aplicarNav();});}
