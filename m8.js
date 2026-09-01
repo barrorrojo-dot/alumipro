@@ -18,4 +18,4 @@ function publishLink(){if(!cur)return;
   prompt('Link del cliente (cópialo y envíaselo por WhatsApp):',location.origin+'/hermana.html?token='+tok);});}
 function verEventos(){if(!cur||!cur.shareToken){alert('Primero genera el link del cliente.');return;}
  SB.from('client_events').select('*').eq('token',cur.shareToken).order('created_at').then(function(r){
-  alert(((r.data||[]).map(function(e){return '• '+e.tipo+(e.monto?' $'+e.monto:'')+' · '+new Date(e.created_at).toLocaleString();}).join('\n'))||'Sin eventos del cliente.');});}
+  alert(((r.data||[]).map(function(e){return '• '+e.tipo+(e.monto?' $'+e.monto:'')+(e.msg?' — '+e.msg:'')+' · '+new Date(e.created_at).toLocaleString();}).join('\n'))||'Sin eventos del cliente.');});}
