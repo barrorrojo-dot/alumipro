@@ -7,17 +7,18 @@ body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:#F1F5F9;col
 .card{background:#fff;border-radius:16px;box-shadow:0 8px 24px rgba(15,23,42,.12);padding:16px;margin:12px 0}
 h2,h3{margin:.2em 0}
 .btn{display:block;width:100%;border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:700;color:#fff;background:#1E88E5;cursor:pointer;margin:8px 0;text-align:center;text-decoration:none}
-.btn.green{background:#16A34A}.btn.wa{background:#25D366}
+.btn.green{background:#16A34A}.btn.wa{background:#25D366}.btn.orange{background:#F97316}
 .tag{padding:4px 10px;border-radius:8px;font-size:12px;font-weight:700;background:#DBEAFE;color:#2563EB}
-.step{display:flex;gap:10px;align-items:center;padding:6px 0;color:#94A3B8}
-.step.on{color:#0F172A;font-weight:700}
-.dot{width:14px;height:14px;border-radius:50%;background:#CBD5E1;flex:none}
-.step.on .dot{background:#16A34A}
 table{width:100%;border-collapse:collapse;font-size:13px}td,th{border-bottom:1px solid #e2e8f0;padding:6px 4px;text-align:left}
+label{font-size:13px;color:#475569}
+input,select,textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;margin:4px 0 10px}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}
 </style></head><body><div class="wrap">
 <div id="head" class="card" style="text-align:center"></div>
 <div id="proy" class="card"></div>
 <div id="estado" class="card"></div>
+<div id="cotiz" class="card"></div>
+<div id="poliza" class="card"></div>
 <div id="cat" class="card"></div>
 <div id="contacto" class="card"></div>
 </div><script>
@@ -26,22 +27,31 @@ var token=new URLSearchParams(location.search).get('token');
 if(!token){document.getElementById('proy').innerHTML='<p>Enlace no válido.</p>';}
 else SB.from('shares').select('*').eq('token',token).maybeSingle().then(function(r){
  if(!r.data){document.getElementById('proy').innerHTML='<p>Enlace no encontrado.</p>';return;}
- var D=r.data.data,T=D.taller,c=D.cot;
+ var D=r.data.data,T=D.taller,c=D.cot;window._tok=token;window._tel=D.whatsapp||'';window._tnom=T.nombre||'';
  document.title=(T.nombre||'Mi Proyecto');
  document.getElementById('head').innerHTML=(T.logo?'<img src="'+T.logo+'" style="max-height:70px">':'')+'<h2>'+(T.nombre||'')+'</h2><small>'+(T.tagline||'')+'</small>';
- var est=c.estado;
- var pasos=['Pendiente','Aprobada','En Proceso','En instalación','Liquidada'];
- var idx=pasos.indexOf(est);if(idx<0)idx=2;
- document.getElementById('proy').innerHTML='<h3>Proyecto #'+c.id+' · '+c.cliente+'</h3><span class="tag">'+est+'</span>'+
+ document.getElementById('proy').innerHTML='<h3>Proyecto #'+c.id+' · '+c.cliente+'</h3><span class="tag">'+c.estado+'</span>'+
   '<table><tr><th>Elemento</th><th>Medida</th><th>Estatus</th></tr>'+c.items.map(function(i){return '<tr><td>'+i.n+'</td><td>'+i.med+'</td><td>'+i.est+'</td></tr>';}).join('')+'</table>'+
   '<p>Avance de corte: <b>'+(D.avance.corte||'—')+'</b> · Orden: '+(D.avance.orden||'—')+'</p>'+
   (D.avance.instalacion?'<p>📅 Instalación programada: '+new Date(D.avance.instalacion).toLocaleDateString('es-MX')+'</p>':'');
  document.getElementById('estado').innerHTML='<h3>💰 Estado de cuenta</h3><p>Total: <b>$'+c.total.toFixed(2)+'</b> · Pagado: <b style="color:#16A34A">$'+c.pagado.toFixed(2)+'</b> · Saldo: <b style="color:#DC2626">$'+c.saldo.toFixed(2)+'</b></p>'+
-  '<button class="btn green" onclick="confAnticipo()">✅ Confirmar anticipo</button>';
- document.getElementById('cat').innerHTML='<h3>🗂 Catálogo</h3>'+D.catalog.map(function(x){return '<div style="padding:6px 0;border-bottom:1px solid #e2e8f0">'+x.n+' · <small>precio bajo cotización</small></div>';}).join('');
+  '<button class="btn green" onclick="confAnticipo()">✅ Confirmar anticipo</button>'+
+  '<button class="btn orange" onclick="solicitarPago()">💳 Solicitar link de pago</button>';
+ document.getElementById('cotiz').innerHTML='<h3>🪟 Solicitar nueva cotización</h3>'+
+  '<div class="row"><div><label>Tipo</label><select id="qTip"><option>Corrediza</option><option>Fija</option><option>Puerta</option><option>Proyectable</option><option>Guillotina</option></select></div>'+
+  '<div><label>Acabado</label><select id="qCol"><option>Natural</option><option>Blanco</option><option>Negro</option><option>Bronce</option></select></div></div>'+
+  '<div class="row"><div><label>Ancho (mm)</label><input id="qW" type="number" value="1800"></div><div><label>Alto (mm)</label><input id="qH" type="number" value="1200"></div></div>'+
+  '<label>Notas</label><textarea id="qNotas" rows="2"></textarea>'+
+  '<button class="btn" onclick="solicitarCot()">Enviar solicitud de cotización</button>';
+ document.getElementById('poliza').innerHTML='<h3>🛡 Póliza de mantenimiento</h3><p style="font-size:13px;color:#64748B">Mantenimiento preventivo de tus ventanas y cancelería.</p>'+
+  '<label>Plan</label><select id="pPlan"><option>Básica (1 visita/año)</option><option>Plus (2 visitas/año)</option></select>'+
+  '<button class="btn" onclick="contratarPoliza()">Contratar póliza</button>';
+ document.getElementById('cat').innerHTML='<h3>🗂 Catálogo</h3>'+D.catalog.map(function(x){return '<div style="padding:6px 0;border-bottom:1px solid #e2e8f0">'+x.n+'</div>';}).join('');
  var tel=D.whatsapp||'';
- document.getElementById('contacto').innerHTML='<h3>📞 Contacto</h3><a class="btn wa" target="_blank" href="https://wa.me/52'+tel.replace(/\D/g,'')+'?text='+encodeURIComponent('Hola '+T.nombre+', soy '+c.cliente+' (Proyecto #'+c.id+')')+'">Escribir por WhatsApp</a>';
- window._tok=token;});
-function confAnticipo(){var m=prompt('Monto del anticipo a confirmar:');if(!m)return;
- SB.from('client_events').insert({token:window._tok,tipo:'confirmar_anticipo',monto:+m}).then(function(){alert('✔ Gracias, tu confirmación fue enviada al taller.');});}
+ document.getElementById('contacto').innerHTML='<h3>📞 Contacto</h3><a class="btn wa" target="_blank" href="https://wa.me/52'+tel.replace(/\D/g,'')+'?text='+encodeURIComponent('Hola '+T.nombre+', soy '+c.cliente+' (Proyecto #'+c.id+')')+'">Escribir por WhatsApp</a>';});
+function ev(tipo,monto,msg){SB.from('client_events').insert({token:window._tok,tipo:tipo,monto:monto||null,msg:msg||null}).then(function(){alert('✔ Enviado al taller. Te contactaremos pronto.');});}
+function confAnticipo(){var m=prompt('Monto del anticipo a confirmar:');if(!m)return;ev('confirmar_anticipo',+m);}
+function solicitarPago(){var m=prompt('Monto para el link de pago:');if(!m)return;ev('solicitar_link_pago',+m);}
+function solicitarCot(){ev('solicitar_cotizacion',null,window.qTip.value+' '+qW.value+'x'+qH.value+'mm '+qCol.value+(qNotas.value?' · '+qNotas.value:''));}
+function contratarPoliza(){ev('solicitar_poliza',null,window.pPlan.value);}
 </script></body></html>
