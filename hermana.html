@@ -1,6 +1,10 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Mi Proyecto</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+.step{display:flex;gap:10px;align-items:center;padding:4px 0;color:#94A3B8;font-size:14px}
+.step.on{color:#0F172A;font-weight:700}
+.dot{width:12px;height:12px;border-radius:50%;background:#CBD5E1;flex:none}
+.step.on .dot{background:#16A34A}
 <style>
 body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:#F1F5F9;color:#0F172A}
 .wrap{max-width:560px;margin:0 auto;padding:16px}
@@ -15,7 +19,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-ra
 .row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}
 </style></head><body><div class="wrap">
 <div id="head" class="card" style="text-align:center"></div>
-<div id="proy" class="card"></div>
+<div id="" class="card"></div>
 <div id="estado" class="card"></div>
 <div id="cotiz" class="card"></div>
 <div id="poliza" class="card"></div>
@@ -24,6 +28,8 @@ input,select,textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-ra
 </div><script>
 var SB=supabase.createClient('https://faxajvtlbyazkmgtkjwe.supabase.co','sb_publishable_qRgmRIBfIl7kjBDQk7iBnQ_JwVuQCfr');
 var token=new URLSearchParams(location.search).get('token');
+   var pasos=['Pendiente','Aprobada','En Proceso','En instalación','Liquidada'];var idx=pasos.indexOf(c.estado);if(idx<0)idx=2;
+  var tl='<div style="margin:8px 0">'+pasos.map(function(p,i){return '<div class="step'+(i<=idx?' on':'')+'"><span class="dot"></span>'+p+'</div>';}).join('')+'</div>';
 if(!token){document.getElementById('proy').innerHTML='<p>Enlace no válido.</p>';}
 else SB.from('shares').select('*').eq('token',token).maybeSingle().then(function(r){
  if(!r.data){document.getElementById('proy').innerHTML='<p>Enlace no encontrado.</p>';return;}
@@ -31,7 +37,7 @@ else SB.from('shares').select('*').eq('token',token).maybeSingle().then(function
  document.title=(T.nombre||'AlumiPro');
  document.getElementById('head').innerHTML=(T.logo?'<img src="'+T.logo+'" style="max-height:70px">':'')+'<h2>'+(T.nombre||'')+'</h2><small>'+(T.tagline||'')+'</small>';
  if(D.cot){var c=D.cot;
-  document.getElementById('proy').innerHTML='<h3>Proyecto #'+c.id+' · '+c.cliente+'</h3><span class="tag">'+c.estado+'</span>'+
+  document.getElementById('proy').innerHTML=tl+'<h3>Proyecto #'+c.id+' · '+c.cliente+'</h3><span class="tag">'+c.estado+'</span>'+
    '<table><tr><th>Elemento</th><th>Medida</th><th>Estatus</th></tr>'+c.items.map(function(i){return '<tr><td>'+i.n+'</td><td>'+i.med+'</td><td>'+i.est+'</td></tr>';}).join('')+'</table>'+
    '<p>Avance de corte: <b>'+(D.avance.corte||'—')+'</b> · Orden: '+(D.avance.orden||'—')+'</p>'+
    (D.avance.instalacion?'<p>📅 Instalación: '+new Date(D.avance.instalacion).toLocaleDateString('es-MX')+'</p>':'');
@@ -57,6 +63,6 @@ else SB.from('shares').select('*').eq('token',token).maybeSingle().then(function
 function ev(tipo,monto,msg){SB.from('client_events').insert({token:window._tok,tipo:tipo,monto:monto||null,msg:msg||null}).then(function(){alert('✔ Enviado al taller. Te contactaremos pronto.');});}
 function confAnticipo(){var m=prompt('Monto del anticipo a confirmar:');if(!m)return;ev('confirmar_anticipo',+m);}
 function solicitarPago(){var m=prompt('Monto para el link de pago:');if(!m)return;ev('solicitar_link_pago',+m);}
-function solicitarCot(){ev('solicitar_cotizacion',null,(qNom.value?qNom.value+' · ':'')+qTip.value+' '+qW.value+'x'+qH.value+'mm '+qCol.value+(qNotas.value?' · '+qNotas.value:''));}
+function solicitarCot(){ev('solicitar_cotizacion',null,JSON.stringify({nom:qNom.value,tip:qTip.value,W:+qW.value,H:+qH.value,col:qCol.value,notas:qNotas.value}));}
 function contratarPoliza(){ev('solicitar_poliza',null,(qNom.value?qNom.value+' · ':'')+pPlan.value);}
 </script></body></html>
