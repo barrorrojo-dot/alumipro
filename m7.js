@@ -13,9 +13,7 @@ function aplicarNav(){var R=window.ROLES||['owner'];var isO=R.includes('owner');
  show('n-cot',isO||R.includes('vendedor'));
  show('n-ped',isO||R.includes('armador')||R.includes('instalador'));
  show('n-prov',isO);show('n-rep',isO);show('n-ajt',isO);
- var hb=document.getElementById('btnMemb');
- if(isO&&!hb){var c=document.querySelector('#home .card');if(c){var b=document.createElement('button');b.id='btnMemb';b.className='btn small';b.textContent='👥 Miembros e invitaciones';b.onclick=abrirMemb;c.appendChild(b);}}
- if(!isO&&hb)hb.remove();}
+  var hb=document.getElementById('btnMemb');if(hb)hb.style.display=isO?'':'none';}
 function canjearCodigo(){var code=prompt('Código de invitación:');if(!code)return;
  SB.from('invites').select('*').eq('code',code.trim()).eq('activo',true).maybeSingle().then(function(r){
   if(!r.data){alert('Código no válido o ya usado.');return;}
