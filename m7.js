@@ -21,8 +21,9 @@ function canjearCodigo(){var code=prompt('Código de invitación:');if(!code)ret
   if(!r.data){alert('Código no válido o ya usado.');return;}
   var tid=r.data.tenant_id,roles=r.data.roles;
   SB.from('tenant_users').select('user_id').eq('user_id',SESSION.id).maybeSingle().then(function(ex){
+      var yaOwner=ex.data&&/owner/.test(ex.data.rol||'');
    var op=ex.data
-     ? SB.from('tenant_users').update({tenant_id:tid,rol:roles}).eq('user_id',SESSION.id)
+     ? SB.from('tenant_users').update({tenant_id:tid,rol:yaOwner?ex.data.rol:roles}).eq('user_id',SESSION.id)
      : SB.from('tenant_users').insert({user_id:SESSION.id,tenant_id:tid,rol:roles});
    op.then(function(res){
      if(res.error){alert('Error: '+res.error.message);return;}
