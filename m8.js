@@ -19,3 +19,17 @@ function publishLink(){if(!cur)return;
 function verEventos(){if(!cur||!cur.shareToken){alert('Primero genera el link del cliente.');return;}
  SB.from('client_events').select('*').eq('token',cur.shareToken).order('created_at').then(function(r){
   alert(((r.data||[]).map(function(e){return '• '+e.tipo+(e.monto?' $'+e.monto:'')+(e.msg?' — '+e.msg:'')+' · '+new Date(e.created_at).toLocaleString();}).join('\n'))||'Sin eventos del cliente.');});}
+function publishPublic(){var t=DB.taller||{};
+ var cat=Object.entries(DB.recetas).map(function(e){return{n:e[1].nombre};});
+ var tok='pub-'+TENANT_ID;
+ SB.from('shares').upsert({token:tok,tenant_id:TENANT_ID,cot_id:null,
+  data:{taller:{nombre:t.nombre,tagline:t.tagline,logo:t.logo},catalog:cat,whatsapp:(t.tel||'')}}).then(function(r){
+  if(r.error){alert(r.error.message);return;}
+  prompt('Link PÚBLICO de tu taller (compártelo en WhatsApp/redes):',location.origin+'/hermana.html?token='+tok);});}
+setInterval(function(){var R=window.ROLES||[];
+ if(R.includes('owner')&&!document.getElementById('btnPub')){
+  var c=document.querySelector('#home .card');if(c){var b=document.createElement('button');b.id='btnPub';b.className='btn small';
+   b.textContent='🌐 Publicar página del taller';b.onclick=publishPublic;c.appendChild(b);}}},4000);
+function verEventos(){var toks=[];if(cur&&cur.shareToken)toks.push(cur.shareToken);toks.push('pub-'+TENANT_ID);
+ SB.from('client_events').select('*').in('token',toks).order('created_at').then(function(r){
+  alert(((r.data||[]).map(function(e){return '• '+e.tipo+(e.monto?' $'+e.monto:'')+(e.msg?' — '+e.msg:'')+' · '+new Date(e.created_at).toLocaleString();}).join('\n'))||'Sin eventos del cliente.');});}
