@@ -616,7 +616,7 @@ function kitItems(prod){var W=prod.W,H=prod.H,R=DB.recetas[prod.tip]||DB.recetas
 function itemSubtotal(it){var mat=(it.kitRows||[]).reduce(function(a,r){return a+r.costo;},0);
  var mo=(it.area||0)*DB.precios.manoObraM2;var venta=(mat+mo)*(1+DB.precios.margen);var iva=venta*DB.precios.iva;
  return{mat:mat,mo:mo,venta:venta,iva:iva,total:venta+iva};}
-function calc(){if(!cW.value)return;off=0;
+function calc(){if(!cW.value)return;off=0;  if(draft){draft.total=itemSubtotal(draft).total*(draft.cant||1);}  if(cur){cur.total=(cur.items||[]).reduce(function(a,it){return a+itemSubtotal(it).total*(it.cant||1);},0);}
  document.getElementById('rowConf').style.display=(cTip.value=='cor2'||cTip.value=='cor20')?'flex':'none';
  var tipName=cTip.options[cTip.selectedIndex].text;
  var serName=cLin.options[cLin.selectedIndex].text;
@@ -662,7 +662,7 @@ function renderProducts(){if(!cur)cur={cliente:'',items:[]};
   '<button class="btn small" onclick="chgCant('+i+',-1)">−</button><b>'+it.cant+'</b><button class="btn small" onclick="chgCant('+i+',1)">＋</button>'+
   '<button class="btn small" onclick="editItem('+i+')">✏️</button><button class="btn del" onclick="delItem('+i+')">✖</button></div>';}).join('')||
   '<p>Aún no agregas productos. Configura arriba y pulsa "＋ Agregar producto".</p>';}
-function renderTotals(){var tot=(cur?cur.items:[]).reduce(function(a,it){return a+itemSubtotal(it).total*it.cant;},0);
+function renderTotals(){var tot=(cur?cur.items:[]).reduce(function(a,it){return a+itemSubtotal(it).total*it.cant;},0);  if(cur)cur.total=tot;
  document.getElementById('totGlow').textContent='$'+tot.toFixed(2);}
 function addProducto(){if(!draft)calc();
  if(!cur)cur={cliente:'',items:[]};
