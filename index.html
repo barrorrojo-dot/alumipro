@@ -679,7 +679,7 @@ function guardarCot(){if(!cur||!cur.items.length){alert('Agrega al menos un prod
  var f0=cur.items[0];cur.tip=f0.tip;cur.lin=f0.lin;cur.W=f0.W;cur.H=f0.H;cur.col=f0.col;cur.vidTxt=f0.vidTxt;
  var agg=aggregate();
  cur.K={items:flattenItems(),cortes:agg.cortes,vidM2:agg.vidM2,area:0};
- cur.id=DB.sigCot++;cur.estado='Pendiente';DB.cotizaciones.push(cur);save();abrirTaller(cur.id);}
+ DB.cotizaciones=DB.cotizaciones.filter(function(x){return x.id!==cur.id;});  cur.id=DB.sigCot++;cur.estado='Pendiente';DB.cotizaciones.push(cur);save();abrirTaller(cur.id);}
 function flattenItems(){var out=[];(cur.items||[]).forEach(function(it){(it.kitRows||[]).forEach(function(r){
  out.push({n:r.n,d:it.cant+'× '+r.d,costo:r.costo*it.cant});});});return out;}
 function aggregate(){var cm={},vid=0,hm={};
@@ -848,7 +848,7 @@ function renderPlano(cot){var K=cot.K||{items:[]};
  '<p class="badge-check">✓ DIAGRAMA TÉCNICO INCLUIDO</p>';
  return s;}
 
-function abrirTaller(id){cur=DB.cotizaciones.find(function(c){return c.id==id;});
+function abrirTaller(id){cur=DB.cotizaciones.find(function(c){return c.id==id;});  if(cur)cur._edit=true;
  if(!cur.items&&cur.K)cur.items=[{tip:cur.tip||'cor2',lin:cur.lin||'L3',W:cur.W||1800,H:cur.H||1200,conf:cur.conf||'2H',zoc:cur.zoc||'V',col:cur.col||'Natural',vid:'v_claro6',vidTxt:cur.vidTxt||'Claro 6mm',cant:1,kitRows:(cur.K.items||[]).map(function(r){return Object.assign({},r);}),area:cur.K.area||0}];
  go('taller');
  tTitulo.textContent='Cot #'+cur.id+' — '+cur.cliente+' · '+(cur.items?cur.items.length:0)+' producto(s)';
