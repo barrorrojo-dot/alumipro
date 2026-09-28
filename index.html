@@ -80,11 +80,10 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <div class="card"><h2 id="saludo">¡Bienvenido!</h2><p id="fecha" style="color:#64748B"></p> <button class="btn small" id="btnMemb" style="display:none" onclick="abrirMemb()">👥 Miembros e invitaciones</button></div>
 <div class="row">
  <div class="card"><h3>Mis Últimas Cotizaciones</h3><div id="ultCots"></div></div>
-  <div class="card">
+ <div class="card">
   <button class="btn" onclick="go('cot')">🪟＋ Crear Nueva Cotización</button>
   <button class="btn" onclick="go('ped')">🗂️ Proyectos</button>
-  <button class="btn" onclick="go('inv')">📦 Inventario</button>
- </div></div>
+  <button class="btn" onclick="go('inv')">📦 Inventario</button></div></div>
 <div class="row">
  <div class="card gcard" onclick="go('cat')"><span class="gicon">🗂</span><b>Catálogo de Productos</b></div>
  <div class="card gcard" onclick="go('cli')"><span class="gicon">👥</span><b>Gestionar Clientes</b></div></div>
@@ -144,10 +143,10 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
  <button class="btn small" onclick="agregarElemento()">＋ Agregar elemento</button>
  <button class="btn small" onclick="irACorte()">🪚 Ir a proceso de corte</button>
 </div>
-<button class="btn navy" onclick="convertirOrden()">🏭 Convertir en Orden de Armado</button>
+<button class="btn navy" onclick="convertirOrden()"> Convertir en Orden de Armado</button>
 <button class="btn orange" onclick="exportarPDF()">📄 Exportar PDF Cliente</button>
 <button class="btn" onclick="enviarWhatsApp()">📲 Enviar por WhatsApp</button>
-<button class="btn small" onclick="go('cots')">📋 Historial</button>
+<button class="btn small" onclick="go('cots')"> Historial</button>
 <button class="btn small" onclick="go('home')">← Volver</button></div></div>
 
 <div id="opt" class="screen"><div class="card"><h2>Optimizador de Cortes — Barras 6.10 m</h2>
@@ -189,7 +188,7 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 
 <div id="rep" class="screen"><div class="card"><h2>Reportes</h2><div id="repBody"></div></div></div>
 
-<div id="cat" class="screen"><div class="card"><h2>🗂 Catálogo de Productos</h2>
+<div id="cat" class="screen"><div class="card"><h2> Catálogo de Productos</h2>
 <div id="catProds"></div>
 <button class="btn small" onclick="go('home')">← Volver</button></div></div>
 
@@ -222,18 +221,16 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 </div></div>
 
 <div id="ajt" class="screen"><div class="card"><h2>Ajustes</h2>
-<h3>🎨 Branding</h3>
+<h3> Branding</h3>
 <label style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
  <input type="checkbox" id="hideBrand" onchange="setHideBrand(this.checked)"> 
  Ocultar nombre, logo y eslogan del taller en el inicio
 </label>
 <p style="font-size:12px;color:#64748B">Edita solo el valor de cada campo; se guarda al cambiar.</p>
 <div id="ajForm"></div>
-<p style="font-size:12px;color:#64748B">Edita solo el valor de cada campo; se guarda al cambiar.</p>
-<div id="ajForm"></div>
 <h3>Recetas de despiece (avanzado)</h3><textarea id="ajRecetas" rows="8"></textarea>
-<button class="btn" onclick="guardarAjustes()">💾 Guardar recetas</button>
-<button class="btn orange" onclick="go('onb')">🏭 Configurar Taller (Onboarding)</button></div></div>
+<button class="btn" onclick="guardarAjustes()"> Guardar recetas</button>
+<button class="btn orange" onclick="go('onb')"> Configurar Taller (Onboarding)</button></div></div>
 
 <div id="ord" class="screen"><div class="card"><h2 id="ordTitulo"></h2>
 <p id="ordEstado"></p>
@@ -274,9 +271,7 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <button onclick="go('inv')" id="n-inv">📦<br>Inventario</button>
 <button onclick="go('prov')" id="n-prov">🏭<br>Precios</button>
 <button onclick="go('rep')" id="n-rep">📊<br>Rep</button>
-<button onclick="go('ajt')" id="n-ajt">⚙️<br>Ajustes</button>
-<button onclick="logout()" id="n-salir">🚪<br>Salir</button>
-</nav>
+<button onclick="go('ajt')" id="n-ajt">️<br>Ajustes</button>
 <button onclick="logout()" id="n-salir">🚪<br>Salir</button>
 </nav>
 
@@ -292,7 +287,7 @@ var SUPABASE_ANON='sb_publishable_qRgmRIBfIl7kjBDQk7iBnQ_JwVuQCfr';
 var SB=null;
 try{if(window.supabase&&SUPABASE_URL&&SUPABASE_ANON){SB=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);}}catch(e){SB=null;}
 var SESSION=null,TENANT_ID=null,_saveT=null;
-function setCloud(on){var el=document.getElementById('cloudStat');if(el)el.textContent=on?'☁️ sincronizado':'☁️ local';}
+function setCloud(on){var el=document.getElementById('cloudStat');if(el)el.textContent=on?'☁️ sincronizado':'️ local';}
 
 let DB=null;try{DB=JSON.parse(localStorage.getItem('alumiproV10')||'null');}catch(e){DB=null;}
 if(!DB)DB={
@@ -569,17 +564,16 @@ function go(s){ if(window.ROL&&window.ROL!=='owner'&&(s=='ajt'||s=='prov'||s=='r
  document.getElementById('nav').style.display=(s=='lg')?'none':'flex';
  document.querySelectorAll('nav button').forEach(function(b){b.classList.remove('on');});
  var nb=document.getElementById(s=='cots'?'n-cot':('n-'+s));if(nb)nb.classList.add('on');
- if(s=='home')renderHome();if(s=='ped')renderPed();if(s=='rep')renderRep();
+ if(s=='home')renderHome();if(s=='ped')renderPed();if(s=='inv')renderInv();if(s=='rep')renderRep();
  if(s=='corte')renderCorte();if(s=='desg')renderDesg('tramos');
  if(s=='ajt')renderAjt();if(s=='opt')renderOpt();if(s=='cat')renderCat();if(s=='cli')renderCli();
  if(s=='prov')renderProv();
  if(s=='onb')renderOnb();
  if(s=='cots')renderCots();
  if(s=='cot'){llenarClientes();llenarVidrios();if(!cur)cur={cliente:'',items:[]};if(!draft)calc();}}
- if(s=='home')renderHome();if(s=='ped')renderPed();if(s=='inv')renderPed();if(s=='rep')renderRep();
 function llenarClientes(){document.getElementById('listaClientes').innerHTML=(DB.clientes||[]).map(function(c){return '<option value="'+c.n+'">';}).join('');}
 function llenarVidrios(){var sel=document.getElementById('cVid');sel.innerHTML=(DB.inv.vidrios||[]).map(function(v){return '<option value="'+v.id+'">'+v.n+' — $'+v.p+'/m²</option>';}).join('');sel.value='v_claro6';}
-function setHideBrand(v){DB.taller=DB.taller||{};DB.taller.hideBrand=!!v;save();renderHome();}
+
 function renderHome(){
  var hide=DB.taller&&DB.taller.hideBrand;
  document.getElementById('homeLogo').innerHTML = hide ? '' : brandH(84,false);
@@ -892,40 +886,40 @@ function desgloseMateriales(){if(!cur)return;var agg=aggregate();
  h+='</table><h4>Herrajes / vidrio</h4><ul>'+agg.herr.map(function(x){return '<li>'+x.n+' × '+x.un+'</li>';}).join('')+'</ul>';
  document.getElementById('tDespiece').innerHTML=h;}
 function agregarElemento(){if(!cur)return;cur._edit=true;cCliente.value=cur.cliente;go('cot');}
-   function irACorte(){
-    if(!cur)return;
-    var ord=DB.pedidos.find(function(p){return p.cotId==cur.id;});
-    if(!ord){alert('Primero convierte la cotización en Orden de Armado ().');return;}
-    console.log('Ir a proceso de corte - Orden #'+ord.id);
-    go('ped');
-    setTimeout(function(){
-     var btns=document.querySelectorAll('#ped button');
-     for(var i=0;i<btns.length;i++){
-      var b=btns[i];
-      if(b.textContent.trim()===' Abrir'){
-       var parent=b.parentElement;
-       while(parent&&parent.id!=='pedLista'){
-        if(parent.textContent.indexOf('Orden #'+ord.id)>-1){
-         console.log('Abriendo orden #'+ord.id);
-         b.click();
-         setTimeout(function(){
-          var corteBtns=document.querySelectorAll('button');
-          for(var j=0;j<corteBtns.length;j++){
-           if(corteBtns[j].textContent.trim()===' Proceso de corte'){
-            console.log('Activando Piso de Corte');
-            corteBtns[j].click();
-            return;
-           }
-          }
-         },600);
+function irACorte(){
+ if(!cur)return;
+ var ord=DB.pedidos.find(function(p){return p.cotId==cur.id;});
+ if(!ord){alert('Primero convierte la cotización en Orden de Armado ().');return;}
+ console.log('Ir a proceso de corte - Orden #'+ord.id);
+ go('ped');
+ setTimeout(function(){
+  var btns=document.querySelectorAll('#ped button');
+  for(var i=0;i<btns.length;i++){
+   var b=btns[i];
+   if(b.textContent.trim()===' Abrir'){
+    var parent=b.parentElement;
+    while(parent&&parent.id!=='pedLista'){
+     if(parent.textContent.indexOf('Orden #'+ord.id)>-1){
+      console.log('Abriendo orden #'+ord.id);
+      b.click();
+      setTimeout(function(){
+       var corteBtns=document.querySelectorAll('button');
+       for(var j=0;j<corteBtns.length;j++){
+        if(corteBtns[j].textContent.trim()===' Proceso de corte'){
+         console.log('Activando Piso de Corte');
+         corteBtns[j].click();
          return;
         }
-        parent=parent.parentElement;
        }
-      }
+      },600);
+      return;
      }
-    },400);
+     parent=parent.parentElement;
+    }
    }
+  }
+ },400);
+}
 function optimizar(cortes,retazos,barra,kerf){barra=barra||((DB.desc&&DB.desc.largoBarra)||6100);kerf=kerf||((DB.desc&&DB.desc.kerf)||3.5);
  var s=(cortes||[]).slice().sort(function(a,b){return b-a;}),bs=[],usados=0;
  s.forEach(function(c){
@@ -1013,18 +1007,21 @@ function enviarWhatsApp(){var c=cur;if(!c)return;
  window.open(url,'_blank');}
 
 function renderPed(){pedLista.innerHTML=DB.pedidos.map(function(p,oi){var c=DB.cotizaciones.find(function(x){return x.id==p.cotId;});
- return '<div style="padding:8px 0;border-bottom:1px solid #e2e8f0"><b>Orden #'+p.id+'</b> · Cot #'+p.cotId+' ('+(c?c.cliente:'')+') · <span class="tag '+tagEst(p.estado)+'">'+p.estado+'</span><br><small>Barras: '+p.barras.marco+' marco + '+p.barras.hoja+' hoja</small> <button class="btn small" onclick="abrirOrden('+oi+')">🪚 Abrir</button>'+(c?'<button class="btn small" onclick="pago('+c.id+')">💵 Registrar pago</button>':'')+'</div>';}).join('')||'<p>Sin órdenes.</p>';
- var cats={perfiles:'🧱 Perfiles',herrajes:'🔩 Herrajes',vidrios:'🪟 Vidrios',consumibles:'🧴 Consumibles'};
+ return '<div style="padding:8px 0;border-bottom:1px solid #e2e8f0"><b>Orden #'+p.id+'</b> · Cot #'+p.cotId+' ('+(c?c.cliente:'')+') · <span class="tag '+tagEst(p.estado)+'">'+p.estado+'</span><br><small>Barras: '+p.barras.marco+' marco + '+p.barras.hoja+' hoja</small> <button class="btn small" onclick="abrirOrden('+oi+')"> Abrir</button>'+(c?'<button class="btn small" onclick="pago('+c.id+')">💵 Registrar pago</button>':'')+'</div>';}).join('')||'<p>Sin órdenes.</p>';}
+
+function renderInv(){
+ var cats={perfiles:'🧱 Perfiles',herrajes:'🔩 Herrajes',vidrios:' Vidrios',consumibles:'🧴 Consumibles'};
  var html='';for(var k in cats){html+='<h4>'+cats[k]+'</h4><table><tr><th>Material</th><th>Unidad</th><th>Stock</th><th>Mín</th><th></th></tr>';
   (DB.inv[k]||[]).forEach(function(i){var tot=0,mint=0;Object.keys(i.st).forEach(function(q){tot+=i.st[q].s;mint+=i.st[q].min;});
    var low=tot<mint,nRet=(i.retazos||[]).length;
-   html+='<tr><td><button class="btn small" onclick="toggleInv(\''+i.id+'\')">▸</button> <b>'+i.n+'</b></td><td>'+i.u+'</td><td style="color:'+(low?'#DC2626':'#16A34A')+';font-weight:700">'+(+tot).toFixed(0)+(nRet?' <span style="color:#059669">+'+nRet+'♻️</span>':'')+'</td><td>'+mint+'</td><td><button class="btn small" onclick="addRetazo(\''+k+'\',\''+i.id+'\')">＋♻️</button></td></tr>';
+   html+='<tr><td><button class="btn small" onclick="toggleInv(\''+i.id+'\')">▸</button> <b>'+i.n+'</b></td><td>'+i.u+'</td><td style="color:'+(low?'#DC2626':'#16A34A')+';font-weight:700">'+(+tot).toFixed(0)+(nRet?' <span style="color:#059669">+'+nRet+'️</span>':'')+'</td><td>'+mint+'</td><td><button class="btn small" onclick="addRetazo(\''+k+'\',\''+i.id+'\')">＋♻️</button></td></tr>';
    var body=Object.keys(i.st).map(function(q){return '<tr style="background:#F8FAFC"><td>— '+q+'</td><td></td><td style="color:'+(i.st[q].s<i.st[q].min?'#DC2626':'#16A34A')+';font-weight:700">'+(+i.st[q].s).toFixed(0)+'</td><td>'+i.st[q].min+'</td><td><button class="btn small" onclick="editInv(\''+k+'\',\''+i.id+'\',\''+q+'\')">✏️</button></td></tr>';}).join('');
    var retByAc={};(i.retazos||[]).forEach(function(r){var kk=r.ac||'General';retByAc[kk]=retByAc[kk]||[];retByAc[kk].push(r.mm);});
    body+=Object.keys(retByAc).map(function(kk){return '<tr style="background:#ECFDF5"><td>♻️ Retazos '+kk+'</td><td>mm</td><td colspan="2">'+retByAc[kk].length+' pza(s): '+retByAc[kk].join(', ')+' mm</td><td></td></tr>';}).join('');
    html+='<tbody id="inv_'+i.id+'" style="display:none">'+body+'</tbody>';});
   html+='</table>';}
  invTabla.innerHTML=html;}
+
 function pago(id){var c=DB.cotizaciones.find(function(x){return x.id==id;});if(!c)return;
  var m=prompt('Total $'+(c.total||0).toFixed(0)+'. Monto del pago:',Math.round((c.total||0)*0.5));if(!m)return;
  c.pagado=(c.pagado||0)+ +m;c.estado=c.pagado>=c.total?'Liquidada':'En Proceso';save();renderPed();}
@@ -1041,38 +1038,9 @@ function campos(obj,grp){var s='';for(var k in obj){if(typeof obj[k]=='object')c
  return s;}
 function setAjuste(grp,k,v){DB[grp][k]=+v;save();}
 function guardarAjustes(){try{DB.recetas=JSON.parse(ajRecetas.value);save();alert('✔ Guardado');}catch(e){alert('JSON de recetas inválido');}}
+function setHideBrand(v){DB.taller=DB.taller||{};DB.taller.hideBrand=!!v;save();renderHome();}
 
 try{renderHome();}catch(e){console.error(e);}
 cloudLoad(function(){try{refreshBrand();renderHome();}catch(e){}});
 </script>
-<script src="m3.js"></script>
-<script src="m4.js"></script>
-<script src="m5.js"></script>
-<script src="m6.js"></script>
-<script src="m7.js"></script>
-<script src="m8.js"></script>
-<script src="m9.js"></script>
-<script src="m10.js"></script>
-<script src="m11.js"></script>
-<script src="m12.js"></script>
-<script src="m13.js"></script>
-<script src="m14.js"></script>
-<script src="m15.js"></script>
-<script src="m16.js"></script>
-<script src="m17.js"></script>
-<script src="m18.js"></script>
-<script src="m19.js"></script>
-<script src="m20.js"></script>
-<script src="m21.js"></script>
-<script src="m22.js"></script>
-<script src="m23.js"></script>
-<!-- <script src="m16.js"></script> -->
-<!-- <script src="m17.js"></script> -->
-<!-- <script src="m18.js"></script> -->
-<!-- <script src="m19.js"></script> -->
-<!-- <script src="m20.js"></script> -->
-<!-- <script src="m21.js"></script> -->
-<!-- <script src="m22.js"></script> -->
-<!-- <script src="m23.js"></script> -->
-
 </body></html>
