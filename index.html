@@ -875,40 +875,40 @@ function desgloseMateriales(){if(!cur)return;var agg=aggregate();
  h+='</table><h4>Herrajes / vidrio</h4><ul>'+agg.herr.map(function(x){return '<li>'+x.n+' × '+x.un+'</li>';}).join('')+'</ul>';
  document.getElementById('tDespiece').innerHTML=h;}
 function agregarElemento(){if(!cur)return;cur._edit=true;cCliente.value=cur.cliente;go('cot');}
-function irACorte(){
- if(!cur)return;
- var ord=DB.pedidos.find(function(p){return p.cotId==cur.id;});
- if(!ord){alert('Primero convierte la cotización en Orden de Armado ().');return;}
- console.log('Ir a proceso de corte - Orden #'+ord.id);
- go('ped');
- setTimeout(function(){
-  var btns=document.querySelectorAll('#ped button');
-  for(var i=0;i<btns.length;i++){
-   var b=btns[i];
-   if(b.textContent.trim()===' Abrir'){
-    var parent=b.parentElement;
-    while(parent&&parent.id!=='pedLista'){
-     if(parent.textContent.indexOf('Orden #'+ord.id)>-1){
-      console.log('Abriendo orden #'+ord.id);
-      b.click();
-      setTimeout(function(){
-       var corteBtns=document.querySelectorAll('button');
-       for(var j=0;j<corteBtns.length;j++){
-        if(corteBtns[j].textContent.trim()===' Proceso de corte'){
-         console.log('Activando Piso de Corte');
-         corteBtns[j].click();
+   function irACorte(){
+    if(!cur)return;
+    var ord=DB.pedidos.find(function(p){return p.cotId==cur.id;});
+    if(!ord){alert('Primero convierte la cotización en Orden de Armado ().');return;}
+    console.log('Ir a proceso de corte - Orden #'+ord.id);
+    go('ped');
+    setTimeout(function(){
+     var btns=document.querySelectorAll('#ped button');
+     for(var i=0;i<btns.length;i++){
+      var b=btns[i];
+      if(b.textContent.trim()===' Abrir'){
+       var parent=b.parentElement;
+       while(parent&&parent.id!=='pedLista'){
+        if(parent.textContent.indexOf('Orden #'+ord.id)>-1){
+         console.log('Abriendo orden #'+ord.id);
+         b.click();
+         setTimeout(function(){
+          var corteBtns=document.querySelectorAll('button');
+          for(var j=0;j<corteBtns.length;j++){
+           if(corteBtns[j].textContent.trim()===' Proceso de corte'){
+            console.log('Activando Piso de Corte');
+            corteBtns[j].click();
+            return;
+           }
+          }
+         },600);
          return;
         }
+        parent=parent.parentElement;
        }
-      },600);
-      return;
+      }
      }
-     parent=parent.parentElement;
-    }
+    },400);
    }
-  }
- },400);
-}
 }function optimizar(cortes,retazos,barra,kerf){barra=barra||((DB.desc&&DB.desc.largoBarra)||6100);kerf=kerf||((DB.desc&&DB.desc.kerf)||3.5);
  var s=(cortes||[]).slice().sort(function(a,b){return b-a;}),bs=[],usados=0;
  s.forEach(function(c){
