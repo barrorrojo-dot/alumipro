@@ -1005,7 +1005,62 @@ function enviarWhatsApp(){var c=cur;if(!c)return;
  var txt=encodeURIComponent(L.join('\n'));
  var url= tel ? ('https://wa.me/52'+tel.replace(/\D/g,'')+'?text='+txt) : ('https://wa.me/?text='+txt);
  window.open(url,'_blank');}
-
+function abrirOrden(oi){
+ lastPedido=oi;
+ var p=DB.pedidos[oi];if(!p)return;
+ var c=DB.cotizaciones.find(function(x){return x.id==p.cotId;});
+ go('ord');
+ document.getElementById('ordTitulo').textContent='Orden #'+p.id+(c?' · Cot #'+p.cotId+' ('+c.cliente+')':'');
+ document.getElementById('ordEstado').innerHTML='<span class="tag '+tagEst(p.estado)+'">'+p.estado+'</span> · Perfiles cortados: '+(p.perfilesCortados||0)+'/'+(p.totalPerfiles||0);
+ document.getElementById('btnTerm').style.display=(p.estado=='En Armado')?'':'none';
+}
+function terminarArmado(){
+ var p=DB.pedidos[lastPedido];if(!p)return;
+ p.estado='En Instalación';save();
+ alert('✔ Orden enviada a instalación');
+ go('ped');
+}
+function renderCorte(){
+ var p=DB.pedidos[lastPedido];if(!p){document.getElementById('corteCont').innerHTML='<p>Selecciona una orden primero.</p>';return;}
+ var c=DB.cotizaciones.find(function(x){return x.id==p.cotId;});
+ document.getElementById('corteHead').innerHTML='<h3>Orden #'+p.id+' · '+(c?c.cliente:'')+'</h3><p>Perfiles cortados: '+(p.perfilesCortados||0)+'/'+(p.totalPerfiles||0)+'</p>';
+ var html='';
+ (p.plan||[]).forEach(function(pr){
+  html+='<h4>'+pr.n+'</h4>';
+  (pr.barras||[]).forEach(function(b,bi){
+   html+='<div style="margin:8px 0;padding:8px;background:#F8FAFC;border-radius:8px"><b>Barra '+(bi+1)+'</b><br>';
+   html+=b.t.map(function(t){return t+' mm';}).join(' + ');
+   html+='<br><button class="btn small" onclick="marcarCorte('+lastPedido+','+JSON.stringify(pr.n).replace(/"/g,'&quot;')+','+bi+')">✅ Marcar cortada</button></div>';
+  });
+ });
+ document.getElementById('corteCont').innerHTML=html||'<p>Sin cortes asignados.</p>';
+}
+function marcarCorte(oi,nom,bi){
+ var p=DB.pedidos[oi];if(!p)return;
+ p.perfilesCortados=(p.perfilesCortados||0)+1;
+ p.estado='En Corte';save();
+ renderCorte();
+}
+function terminarCorte(){
+ var p=DB.pedidos[lastPedido];if(!p)return;
+ p.estado='En Armado';save();
+ alert('✔ Corte terminado. Orden en proceso de armado.');
+ go('ord');
+}
+function renderDesg(tipo){
+ var p=DB.pedidos[lastPedido];if(!p){document.getElementById('desgCont').innerHTML='<p>Selecciona una orden primero.</p>';return;}
+ var html='<h3>'+((tipo=='tramos')?'Tramos de perfil':'Herrajes y vidrio')+'</h3>';
+ (p.plan||[]).forEach(function(pr){
+  if(tipo=='tramos'){
+   html+='<h4>'+pr.n+'</h4><ul>';
+   (pr.barras||[]).forEach(function(b){html+='<li>'+b.t.join(' + ')+' mm</li>';});
+   html+='</ul>';
+  }
+ });
+ document.getElementById('desgCont').innerHTML=html||'<p>Sin datos.</p>';
+}
+function verTramos(){renderDesg('tramos');}
+function verHerrajes(){renderDesg('herrajes');}
 function renderPed(){pedLista.innerHTML=DB.pedidos.map(function(p,oi){var c=DB.cotizaciones.find(function(x){return x.id==p.cotId;});
  return '<div style="padding:8px 0;border-bottom:1px solid #e2e8f0"><b>Orden #'+p.id+'</b> · Cot #'+p.cotId+' ('+(c?c.cliente:'')+') · <span class="tag '+tagEst(p.estado)+'">'+p.estado+'</span><br><small>Barras: '+p.barras.marco+' marco + '+p.barras.hoja+' hoja</small> <button class="btn small" onclick="abrirOrden('+oi+')"> Abrir</button>'+(c?'<button class="btn small" onclick="pago('+c.id+')">💵 Registrar pago</button>':'')+'</div>';}).join('')||'<p>Sin órdenes.</p>';}
 
