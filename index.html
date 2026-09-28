@@ -880,33 +880,48 @@ function irACorte(){
  var ord=DB.pedidos.find(function(p){return p.cotId==cur.id;});
  if(!ord){alert('Primero convierte la cotización en Orden de Armado ().');return;}
  
- /* Ir a Proyectos y abrir la orden */
+ console.log('m27: Ir a proceso de corte - Orden #'+ord.id);
+ 
+ /* Paso 1: Ir a Proyectos */
  go('ped');
+ 
+ /* Paso 2: Esperar y abrir la orden */
  setTimeout(function(){
-  /* Buscar y hacer clic en "Abrir" de esta orden */
+  console.log('m27: Buscando orden #'+ord.id);
   var btns=document.querySelectorAll('#ped button');
-  for(var i=0;i<btns.length;i++){
-   if(btns[i].textContent.indexOf('Abrir')>-1){
-    var parent=btns[i].closest('div');
-    if(parent&&parent.textContent.indexOf('Orden #'+ord.id)>-1){
-     btns[i].click();
-     /* Esperar y hacer clic en "Proceso de corte" */
-     setTimeout(function(){
-      var corteBtns=document.querySelectorAll('button');
-      for(var j=0;j<corteBtns.length;j++){
-       if(corteBtns[j].textContent.trim()==='Proceso de corte'){
-        corteBtns[j].click();
-        return;
-       }
-      }
-     },400);
-     break;
+  var found=false;
+  for(var i=0;i<btns.length&&!found;i++){
+   var b=btns[i];
+   if(b.textContent.trim()==='🪚 Abrir'){
+    var parent=b.parentElement;
+    while(parent&&parent.id!=='pedLista'){
+     if(parent.textContent.indexOf('Orden #'+ord.id)>-1){
+      console.log('m27: Abriendo orden #'+ord.id);
+      b.click();
+      found=true;
+      break;
+     }
+     parent=parent.parentElement;
     }
    }
   }
- },300);
-}
-function optimizar(cortes,retazos,barra,kerf){barra=barra||((DB.desc&&DB.desc.largoBarra)||6100);kerf=kerf||((DB.desc&&DB.desc.kerf)||3.5);
+  
+  /* Paso 3: Esperar y hacer clic en "Proceso de corte" */
+  setTimeout(function(){
+   console.log('m27: Buscando botón "Proceso de corte"');
+   var corteBtns=document.querySelectorAll('button');
+   for(var j=0;j<corteBtns.length;j++){
+    var cb=corteBtns[j];
+    if(cb.textContent.trim()===' Proceso de corte'){
+     console.log('m27: Activando Piso de Corte');
+     cb.click();
+     return;
+    }
+   }
+   console.log('m27: No se encontró "Proceso de corte"');
+  },600);
+ },400);
+}function optimizar(cortes,retazos,barra,kerf){barra=barra||((DB.desc&&DB.desc.largoBarra)||6100);kerf=kerf||((DB.desc&&DB.desc.kerf)||3.5);
  var s=(cortes||[]).slice().sort(function(a,b){return b-a;}),bs=[],usados=0;
  s.forEach(function(c){
   if(retazos){var cand=retazos.filter(function(r){return r.mm>=c&&!r.used;}).sort(function(a,b){return a.mm-b.mm;})[0];
