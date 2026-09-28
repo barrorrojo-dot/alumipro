@@ -1,0 +1,37 @@
+/* m24.js — "Ir a proceso de corte" → busca y activa el botón de piso de corte */
+(function(){
+function fixCorteBtn(){
+ document.querySelectorAll('button').forEach(function(b){
+  var t=(b.textContent||'').trim();
+  if(t.indexOf('Ir a proceso de corte')>-1&&!b._fixed24){
+   b._fixed24=true;
+   var origOnclick=b.onclick;
+   b.onclick=function(e){
+    e.preventDefault();e.stopPropagation();
+    /* Ejecutar la función original si existe */
+    if(origOnclick)origOnclick.call(b,e);
+    /* Ir a proyectos/pedidos */
+    if(window.go)setTimeout(function(){go('ped');},100);
+    /* Después de navegar, buscar botón de piso de corte */
+    setTimeout(function(){
+     var btns=document.querySelectorAll('#ped button, #taller button');
+     for(var i=0;i<btns.length;i++){
+      var bt=btns[i];
+      var btText=(bt.textContent||'').toLowerCase();
+      if(btText.indexOf('proceso de corte')>-1||
+         btText.indexOf('piso de corte')>-1||
+         btText.indexOf('iniciar corte')>-1||
+         btText.indexOf('marcar cortes')>-1){
+       bt.click();
+       console.log('m24: activado botón de corte:',bt.textContent);
+       break;
+      }
+     }
+    },800);
+   };
+  }
+ });
+}
+setInterval(fixCorteBtn,2000);
+setTimeout(function(){},30000);
+})();
