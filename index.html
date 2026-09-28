@@ -879,10 +879,8 @@ function irACorte(){
  if(!cur)return;
  var ord=DB.pedidos.find(function(p){return p.cotId==cur.id;});
  if(!ord){alert('Primero convierte la cotización en Orden de Armado ().');return;}
- 
- console.log('m27: Ir a proceso de corte - Orden #'+ord.id);
+ console.log('Ir a proceso de corte - Orden #'+ord.id);
  go('ped');
- 
  setTimeout(function(){
   var btns=document.querySelectorAll('#ped button');
   for(var i=0;i<btns.length;i++){
@@ -891,13 +889,13 @@ function irACorte(){
     var parent=b.parentElement;
     while(parent&&parent.id!=='pedLista'){
      if(parent.textContent.indexOf('Orden #'+ord.id)>-1){
-      console.log('m27: Abriendo orden #'+ord.id);
+      console.log('Abriendo orden #'+ord.id);
       b.click();
       setTimeout(function(){
        var corteBtns=document.querySelectorAll('button');
        for(var j=0;j<corteBtns.length;j++){
         if(corteBtns[j].textContent.trim()===' Proceso de corte'){
-         console.log('m27: Activando Piso de Corte');
+         console.log('Activando Piso de Corte');
          corteBtns[j].click();
          return;
         }
@@ -911,7 +909,7 @@ function irACorte(){
   }
  },400);
 }
-}function optimizar(cortes,retazos,barra,kerf){barra=barra||((DB.desc&&DB.desc.largoBarra)||6100);kerf=kerf||((DB.desc&&DB.desc.kerf)||3.5);
+ }function optimizar(cortes,retazos,barra,kerf){barra=barra||((DB.desc&&DB.desc.largoBarra)||6100);kerf=kerf||((DB.desc&&DB.desc.kerf)||3.5);
  var s=(cortes||[]).slice().sort(function(a,b){return b-a;}),bs=[],usados=0;
  s.forEach(function(c){
   if(retazos){var cand=retazos.filter(function(r){return r.mm>=c&&!r.used;}).sort(function(a,b){return a.mm-b.mm;})[0];
@@ -1051,7 +1049,4 @@ cloudLoad(function(){try{refreshBrand();renderHome();}catch(e){}});
 <script src="m21.js"></script>
 <script src="m22.js"></script>
 <script src="m23.js"></script>
-<script src="m24.js"></script>
-<script src="m25.js"></script>
-<script src="m26.js"></script>
 </body></html>
