@@ -875,8 +875,37 @@ function desgloseMateriales(){if(!cur)return;var agg=aggregate();
  h+='</table><h4>Herrajes / vidrio</h4><ul>'+agg.herr.map(function(x){return '<li>'+x.n+' × '+x.un+'</li>';}).join('')+'</ul>';
  document.getElementById('tDespiece').innerHTML=h;}
 function agregarElemento(){if(!cur)return;cur._edit=true;cCliente.value=cur.cliente;go('cot');}
-function irACorte(){if(!cur)return;var idx=-1;DB.pedidos.forEach(function(p,i){if(p.cotId==cur.id)idx=i;});
- if(idx>=0){lastPedido=idx;planoIdx=0;go('opt');}else{alert('Primero convierte la cotización en Orden de Armado (🏭).');}}
+function irACorte(){
+ if(!cur)return;
+ var ord=DB.pedidos.find(function(p){return p.cotId==cur.id;});
+ if(!ord){alert('Primero convierte la cotización en Orden de Armado ().');return;}
+ 
+ /* Ir a Proyectos y abrir la orden */
+ go('ped');
+ setTimeout(function(){
+  /* Buscar y hacer clic en "Abrir" de esta orden */
+  var btns=document.querySelectorAll('#ped button');
+  for(var i=0;i<btns.length;i++){
+   if(btns[i].textContent.indexOf('Abrir')>-1){
+    var parent=btns[i].closest('div');
+    if(parent&&parent.textContent.indexOf('Orden #'+ord.id)>-1){
+     btns[i].click();
+     /* Esperar y hacer clic en "Proceso de corte" */
+     setTimeout(function(){
+      var corteBtns=document.querySelectorAll('button');
+      for(var j=0;j<corteBtns.length;j++){
+       if(corteBtns[j].textContent.trim()==='Proceso de corte'){
+        corteBtns[j].click();
+        return;
+       }
+      }
+     },400);
+     break;
+    }
+   }
+  }
+ },300);
+}
 function optimizar(cortes,retazos,barra,kerf){barra=barra||((DB.desc&&DB.desc.largoBarra)||6100);kerf=kerf||((DB.desc&&DB.desc.kerf)||3.5);
  var s=(cortes||[]).slice().sort(function(a,b){return b-a;}),bs=[],usados=0;
  s.forEach(function(c){
