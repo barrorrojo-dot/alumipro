@@ -157,9 +157,11 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <div id="optBody"></div>
 <button class="btn" onclick="window.print()">🖨 Imprimir Hoja de Taller</button></div></div>
 
-<div id="ped" class="screen"><div class="card"><h2>Proyectos, Pagos e Inventario</h2>
+<div id="ped" class="screen"><div class="card"><h2>🗂️ Proyectos y Pagos</h2>
 <h3>Órdenes de Armado</h3><div id="pedLista"></div>
-<h3>📦 Inventario por Acabado</h3>
+<button class="btn small" onclick="go('home')">← Volver al Inicio</button></div></div>
+
+<div id="inv" class="screen"><div class="card"><h2>📦 Inventario por Acabado</h2>
 <p style="font-size:12px;color:#64748B">▸ desglose por acabado (♻️ retazos) · ✏️ stock · ＋️ retazo manual.</p>
 <div id="invTabla"></div>
 <h3>➕ Agregar material</h3>
@@ -167,7 +169,7 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <input id="invN" placeholder="Nombre"></div>
 <div class="row"><input id="invU" placeholder="Unidad"><input id="invS" type="number" placeholder="Stock"><input id="invM" type="number" placeholder="Mín"></div>
 <button class="btn small" onclick="addInv()">Agregar al inventario</button>
-<button class="btn small" onclick="go('home')">← Volver</button></div></div>
+<button class="btn small" onclick="go('home')">← Volver al Inicio</button></div></div>
 
 <div id="prov" class="screen"><div class="card"><h2>🏭 Proveedores y Precios</h2>
 <p style="font-size:12px;color:#64748B">Actualiza aquí tus precios de compra. Al guardar, las cotizaciones <b>pendientes</b> se recalculan con el precio vigente.</p>
@@ -220,6 +222,13 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 </div></div>
 
 <div id="ajt" class="screen"><div class="card"><h2>Ajustes</h2>
+<h3>🎨 Branding</h3>
+<label style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
+ <input type="checkbox" id="hideBrand" onchange="setHideBrand(this.checked)"> 
+ Ocultar nombre, logo y eslogan del taller en el inicio
+</label>
+<p style="font-size:12px;color:#64748B">Edita solo el valor de cada campo; se guarda al cambiar.</p>
+<div id="ajForm"></div>
 <p style="font-size:12px;color:#64748B">Edita solo el valor de cada campo; se guarda al cambiar.</p>
 <div id="ajForm"></div>
 <h3>Recetas de despiece (avanzado)</h3><textarea id="ajRecetas" rows="8"></textarea>
@@ -262,10 +271,12 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <nav id="nav">
 <button onclick="go('home')" id="n-home">🏠<br>Inicio</button>
 <button onclick="go('cots')" id="n-cot">📋<br>Cots</button>
-<button onclick="go('ped')" id="n-ped">📦<br>Proyectos</button>
+<button onclick="go('inv')" id="n-inv">📦<br>Inventario</button>
 <button onclick="go('prov')" id="n-prov">🏭<br>Precios</button>
 <button onclick="go('rep')" id="n-rep">📊<br>Rep</button>
-<button onclick="go('ajt')" id="n-ajt">️<br>Ajustes</button>
+<button onclick="go('ajt')" id="n-ajt">⚙️<br>Ajustes</button>
+<button onclick="logout()" id="n-salir">🚪<br>Salir</button>
+</nav>
 <button onclick="logout()" id="n-salir">🚪<br>Salir</button>
 </nav>
 
@@ -565,14 +576,18 @@ function go(s){ if(window.ROL&&window.ROL!=='owner'&&(s=='ajt'||s=='prov'||s=='r
  if(s=='onb')renderOnb();
  if(s=='cots')renderCots();
  if(s=='cot'){llenarClientes();llenarVidrios();if(!cur)cur={cliente:'',items:[]};if(!draft)calc();}}
+ if(s=='home')renderHome();if(s=='ped')renderPed();if(s=='inv')renderPed();if(s=='rep')renderRep();
 function llenarClientes(){document.getElementById('listaClientes').innerHTML=(DB.clientes||[]).map(function(c){return '<option value="'+c.n+'">';}).join('');}
 function llenarVidrios(){var sel=document.getElementById('cVid');sel.innerHTML=(DB.inv.vidrios||[]).map(function(v){return '<option value="'+v.id+'">'+v.n+' — $'+v.p+'/m²</option>';}).join('');sel.value='v_claro6';}
-
-function renderHome(){refreshBrand();
- saludo.textContent='¡Bienvenido'+(window.ROL?' ('+window.ROL+')':'')+'! · '+tallerName();
+function setHideBrand(v){DB.taller=DB.taller||{};DB.taller.hideBrand=!!v;save();renderHome();}
+function renderHome(){
+ var hide=DB.taller&&DB.taller.hideBrand;
+ document.getElementById('homeLogo').innerHTML = hide ? '' : brandH(84,false);
+ saludo.textContent='¡Bienvenido'+(window.ROL?' ('+window.ROL+')':'')+'!'+(hide?'':' · '+tallerName());
  fecha.textContent=new Date().toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+' · Puebla, México';
  ultCots.innerHTML=DB.cotizaciones.slice(-3).reverse().map(function(c){
-  return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e2e8f0;cursor:pointer" onclick="abrirTaller('+c.id+')"><div><b>'+((c.estado=='Pendiente'||c.estado=='Rechazada')?'Cot':'Proyecto')+' #'+c.id+' - '+c.cliente+'</b><br><small>'+(c.items?c.items.length:1)+' producto(s)</small></div><span class="tag '+tagEst(c.estado)+'">'+(c.estado=='Liquidada'?'Instalación':c.estado)+'</span></div>';}).join('')||'<p>Sin cotizaciones aún.</p>';}
+  return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e2e8f0;cursor:pointer" onclick="abrirTaller('+c.id+')"><div><b>'+((c.estado=='Pendiente'||c.estado=='Rechazada')?'Cot':'Proyecto')+' #'+c.id+' - '+c.cliente+'</b><br><small>'+(c.items?c.items.length:1)+' producto(s)</small></div><span class="tag '+tagEst(c.estado)+'">'+(c.estado=='Liquidada'?'Instalación':c.estado)+'</span></div>';}).join('')||'<p>Sin cotizaciones aún.</p>';
+}
 
 function renderCots(){var el=document.getElementById('cotsList');
  el.innerHTML=DB.cotizaciones.slice().reverse().map(function(c){
@@ -1043,7 +1058,7 @@ cloudLoad(function(){try{refreshBrand();renderHome();}catch(e){}});
 <script src="m13.js"></script>
 <script src="m14.js"></script>
 <script src="m15.js"></script>
-<!-- <script src="m16.js"></script> -->
+<script src="m16.js"></script>
 <script src="m17.js"></script>
 <script src="m18.js"></script>
 <script src="m19.js"></script>
@@ -1051,4 +1066,13 @@ cloudLoad(function(){try{refreshBrand();renderHome();}catch(e){}});
 <script src="m21.js"></script>
 <script src="m22.js"></script>
 <script src="m23.js"></script>
+<!-- <script src="m16.js"></script> -->
+<!-- <script src="m17.js"></script> -->
+<!-- <script src="m18.js"></script> -->
+<!-- <script src="m19.js"></script> -->
+<!-- <script src="m20.js"></script> -->
+<!-- <script src="m21.js"></script> -->
+<!-- <script src="m22.js"></script> -->
+<!-- <script src="m23.js"></script> -->
+
 </body></html>
