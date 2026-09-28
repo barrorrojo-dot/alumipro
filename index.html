@@ -909,7 +909,7 @@ function agregarElemento(){if(!cur)return;cur._edit=true;cCliente.value=cur.clie
      }
     },400);
    }
-}function optimizar(cortes,retazos,barra,kerf){barra=barra||((DB.desc&&DB.desc.largoBarra)||6100);kerf=kerf||((DB.desc&&DB.desc.kerf)||3.5);
+function optimizar(cortes,retazos,barra,kerf){barra=barra||((DB.desc&&DB.desc.largoBarra)||6100);kerf=kerf||((DB.desc&&DB.desc.kerf)||3.5);
  var s=(cortes||[]).slice().sort(function(a,b){return b-a;}),bs=[],usados=0;
  s.forEach(function(c){
   if(retazos){var cand=retazos.filter(function(r){return r.mm>=c&&!r.used;}).sort(function(a,b){return a.mm-b.mm;})[0];
