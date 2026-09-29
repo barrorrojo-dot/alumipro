@@ -892,33 +892,6 @@ function irACorte(){
  abrirOrden(idx);
  go('corte');
 }
-  var btns=document.querySelectorAll('#ped button');
-  for(var i=0;i<btns.length;i++){
-   var b=btns[i];
-   if(b.textContent.trim()===' Abrir'){
-    var parent=b.parentElement;
-    while(parent&&parent.id!=='pedLista'){
-     if(parent.textContent.indexOf('Orden #'+ord.id)>-1){
-      console.log('Abriendo orden #'+ord.id);
-      b.click();
-      setTimeout(function(){
-       var corteBtns=document.querySelectorAll('button');
-       for(var j=0;j<corteBtns.length;j++){
-        if(corteBtns[j].textContent.trim()===' Proceso de corte'){
-         console.log('Activando Piso de Corte');
-         corteBtns[j].click();
-         return;
-        }
-       }
-      },600);
-      return;
-     }
-     parent=parent.parentElement;
-    }
-   }
-  }
- },400);
-}
 function optimizar(cortes,retazos,barra,kerf){barra=barra||((DB.desc&&DB.desc.largoBarra)||6100);kerf=kerf||((DB.desc&&DB.desc.kerf)||3.5);
  var s=(cortes||[]).slice().sort(function(a,b){return b-a;}),bs=[],usados=0;
  s.forEach(function(c){
