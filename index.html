@@ -268,7 +268,6 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <nav id="nav">
 <button onclick="go('home')" id="n-home">🏠<br>Inicio</button>
 <button onclick="go('cots')" id="n-cot">📋<br>Cots</button>
-<button onclick="go('inv')" id="n-inv">📦<br>Inventario</button>
 <button onclick="go('prov')" id="n-prov">🏭<br>Precios</button>
 <button onclick="go('rep')" id="n-rep">📊<br>Rep</button>
 <button onclick="go('ajt')" id="n-ajt">️<br>Ajustes</button>
@@ -888,11 +887,11 @@ function desgloseMateriales(){if(!cur)return;var agg=aggregate();
 function agregarElemento(){if(!cur)return;cur._edit=true;cCliente.value=cur.cliente;go('cot');}
 function irACorte(){
  if(!cur)return;
- var ord=DB.pedidos.find(function(p){return p.cotId==cur.id;});
- if(!ord){alert('Primero convierte la cotización en Orden de Armado ().');return;}
- console.log('Ir a proceso de corte - Orden #'+ord.id);
- go('ped');
- setTimeout(function(){
+ var idx=-1;DB.pedidos.forEach(function(p,i){if(p.cotId==cur.id)idx=i;});
+ if(idx<0){alert('Primero convierte la cotización en Orden de Armado (🏭).');return;}
+ abrirOrden(idx);
+ go('corte');
+}
   var btns=document.querySelectorAll('#ped button');
   for(var i=0;i<btns.length;i++){
    var b=btns[i];
@@ -1098,4 +1097,17 @@ function setHideBrand(v){DB.taller=DB.taller||{};DB.taller.hideBrand=!!v;save();
 try{renderHome();}catch(e){console.error(e);}
 cloudLoad(function(){try{refreshBrand();renderHome();}catch(e){}});
 </script>
+<script src="m3.js"></script>
+<script src="m4.js"></script>
+<script src="m5.js"></script>
+<script src="m6.js"></script>
+<script src="m7.js"></script>
+<script src="m8.js"></script>
+<script src="m9.js"></script>
+<script src="m10.js"></script>
+<script src="m11.js"></script>
+<script src="m12.js"></script>
+<script src="m13.js"></script>
+<script src="m14.js"></script>
+<script src="m15.js"></script>
 </body></html>
