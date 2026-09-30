@@ -478,8 +478,19 @@ function invIdPerfil(name,linea){name=String(name).toLowerCase();var L3=(linea!=
  if(/riel/.test(name))return L3?'3001':'2001';
  if(/hoja|cerco|traslape|cabezal|zoclo|intermedio/.test(name))return L3?'3015':'2015';
  return null;}
-function mapHerr(n){n=String(n).toLowerCase();if(/carret/.test(n))return 'h_carret';if(/jaladera/.test(n))return 'h_jaladera';if(/felpa/.test(n))return 'h_felpa';
- if(/pija/.test(n))return 'c_pija10';if(/bisagra/.test(n))return 'h_bisagra';if(/chapa/.test(n))return 'h_chapa';if(/vinil|empaque/.test(n))return 'h_vinilU';return null;}
+function mapHerr(n,lin){n=String(n).toLowerCase();var L25=(lin=='L25');
+ if(/carret/.test(n))return L25?'H2014':'H2029AL';
+ if(/jaladera/.test(n))return 'JAL-EMB';
+ if(/felpa/.test(n))return 'h_felpa';
+ if(/pija/.test(n))return 'c_pija10';
+ if(/bisagra/.test(n))return 'BIS-LIB';
+ if(/chapa|cerradura/.test(n))return 'CER-3';
+ if(/brazo|proyeccion/.test(n))return 'GN-179';
+ if(/seguro|gancho|tope/.test(n))return 'SEG-PIE';
+ if(/vinil|empaque/.test(n))return 'h_vinilU';
+ if(/cierra/.test(n))return 'h_cierra';
+ if(/balancin/.test(n))return 'h_bal';
+ return null;}
 function addInv(){if(!invN.value)return;var it=mkIt('x'+Date.now(),invN.value,invU.value||'pz',+invS.value||0,+invM.value||0,
  (invCat.value=='perfiles')?FIN_PERFIL:null);DB.inv[invCat.value].push(it);save();invN.value=invU.value=invS.value=invM.value='';renderPed();}
 function editInv(k,id,q){var it=DB.inv[k].find(function(i){return i.id==id;});var v=prompt('Stock '+q+' de '+it.n+':',it.st[q].s);if(v===null)return;it.st[q].s=+v||0;save();renderPed();}
@@ -917,7 +928,7 @@ function convertirOrden(){  var ex=null;DB.pedidos.forEach(function(p,i){if(p.co
   if(pr.g=='marco')bM+=res.barras.length;else bH+=res.barras.length;
   plan.push({n:pr.n,a:pr.a,g:pr.g,barras:res.barras,usados:res.usados,sobr:nuevos.map(function(x){return x.mm;})});});
  if(agg.vidM2)invSub((cur.items&&cur.items[0]&&cur.items[0].vidId)||'v_claro6',agg.vidM2);
- agg.herr.forEach(function(h){var id=mapHerr(h.n);if(id)invSub(id,h.un,acH);});
+ agg.herr.forEach(function(h){var id=mapHerr(h.n,cur.lin);if(id)invSub(id,h.un,acH);});
  DB.pedidos.push({id:DB.pedidos.length+1,cotId:cur.id,barras:{marco:bM,hoja:bH},estado:'En Corte',plan:plan});
  cur.estado='En Proceso';save();lastPedido=DB.pedidos.length-1;planoIdx=0;
  optBanner.innerHTML='<div class="card" style="background:#DCFCE7;border-left:6px solid #16A34A">✅ Orden generada · inventario descontado · '+totUsados+' retazo(s) usado(s) · '+totRet+' sobrante(s) ingresado(s)</div>';
