@@ -473,10 +473,11 @@ function invItem(id){var ks=['perfiles','herrajes','vidrios','consumibles'];for(
 function invSub(id,q,fin){var it=invItem(id);if(!it)return;var ks=Object.keys(it.st);
  var k=(fin&&it.st[fin])?fin:(it.st['General']?'General':ks[0]);
  if(it.st[k])it.st[k].s=Math.max(0,it.st[k].s-q);}
-function invIdPerfil(name,linea){name=String(name).toLowerCase();var L=linea=='L25'?'2':'3';
- if(/chambrana|jamba/.test(name))return 'p_jamba'+L;if(/riel/.test(name))return 'p_riel'+L;
- if(/traslape/.test(name))return 'p_traslape'+L;if(/cerco/.test(name))return 'p_cerco'+L;
- if(/zoclo/.test(name))return /2 venas|puerta/.test(name)?'p_zoclop'+L:'p_zoclo'+L;if(/cabezal/.test(name))return 'p_cab'+L;return null;}
+function invIdPerfil(name,linea){name=String(name).toLowerCase();var L3=(linea!='L25');
+ if(/chambrana|jamba/.test(name))return L3?'3002':'2002';
+ if(/riel/.test(name))return L3?'3001':'2001';
+ if(/hoja|cerco|traslape|cabezal|zoclo|intermedio/.test(name))return L3?'3015':'2015';
+ return null;}
 function mapHerr(n){n=String(n).toLowerCase();if(/carret/.test(n))return 'h_carret';if(/jaladera/.test(n))return 'h_jaladera';if(/felpa/.test(n))return 'h_felpa';
  if(/pija/.test(n))return 'c_pija10';if(/bisagra/.test(n))return 'h_bisagra';if(/chapa/.test(n))return 'h_chapa';if(/vinil|empaque/.test(n))return 'h_vinilU';return null;}
 function addInv(){if(!invN.value)return;var it=mkIt('x'+Date.now(),invN.value,invU.value||'pz',+invS.value||0,+invM.value||0,
@@ -612,8 +613,11 @@ function kitItems(prod){var W=prod.W,H=prod.H,R=DB.recetas[prod.tip]||DB.recetas
  var raw=[];(R.perfiles||[]).forEach(function(p){var n=p.n,a=p.a||40;
    var lens=Array.isArray(p.f)?p.f.map(function(x){return F(x,W,H);}):Array(p.c||1).fill(F(p.f,W,H));
    raw.push({n:n,g:p.g,lens:lens,a:a});});
+  var PL=(DB.preciosLineas||{})[prod.lin]||{};var fac=(DB.facAcab||{})[finPerfil(prod.col)]||1;
+ var bM=(PL.marco||P.marcoM)*fac,bH=(PL.hoja||P.hojaM)*fac;
  var items=raw.map(function(r){var mTot=r.lens.reduce(function(a,b){return a+b;},0)/1000;
-  return{n:r.n,d:r.d||(r.lens.length+' pz: '+r.lens.join(' + ')+' mm'),costo:mTot*(r.g=='marco'?P.marcoM:P.hojaM),g:r.g,len:r.lens[0],lens:r.lens,cant:r.lens.length,a:r.a};});
+  var pu=(r.g=='marco')?bM:bH;
+  return{n:r.n,d:r.d||(r.lens.length+' pz: '+r.lens.join(' + ')+' mm'),costo:mTot*pu,pUnit:pu,g:r.g,len:r.lens[0],lens:r.lens,cant:r.lens.length,a:r.a};});
  var vid=(DB.inv.vidrios||[]).find(function(v){return v.id==prod.vid;})||{p:380,n:'Claro 6mm',id:'v_claro6'};
  var vidM2=0;if(R.vidrio){var vw=F(R.vidrio.fW,W,H),vh=F(R.vidrio.fH,W,H);vidM2=vw*vh/1e6*R.vidrio.n;
   items.push({n:'Vidrio '+vid.n+' ('+vw+'×'+vh+'mm)',d:R.vidrio.n+' pz · '+vidM2.toFixed(2)+' m²',costo:vidM2*vid.p,vidM2:vidM2,g:'vidrio',vidId:vid.id});}
@@ -637,6 +641,7 @@ function calc(){if(!cW.value)return;off=0;  if(draft){draft.total=itemSubtotal(d
  draft=prod;
  render3d(draft);renderProducts();renderTotals();}
 function priceOf(r){
+ if(r.pUnit)return r.pUnit;
  if(r.g=='marco')return DB.precios.marcoM;
  if(r.g=='hoja')return DB.precios.hojaM;
  if(r.g=='vidrio'){var v=DB.inv.vidrios.find(function(v){return v.n==r.n;});return v?v.p:0;}
