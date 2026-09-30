@@ -900,7 +900,7 @@ function optimizar(cortes,retazos,barra,kerf){barra=barra||((DB.desc&&DB.desc.la
   var b=bs.find(function(x){return x.rest>=c+kerf;});
   if(b){b.t.push(c);b.rest-=c+kerf;}else bs.push({t:[c],rest:barra-c-kerf});});
  return{barras:bs,usados:usados};}
-function convertirOrden(){var agg=aggregate(),plan=[],totUsados=0,totRet=0,bM=0,bH=0;
+function convertirOrden(){  var ex=null;DB.pedidos.forEach(function(p,i){if(p.cotId==cur.id&&p.estado!='Cancelada')ex=i;});  if(ex!==null){if(confirm('Esta cotización ya generó la Orden #'+DB.pedidos[ex].id+'. No se duplicará inventario. ¿Abrir esa orden?')){abrirOrden(ex);}return;}  var agg=aggregate(),plan=[],totUsados=0,totRet=0,bM=0,bH=0;
  var acP=finPerfil(cur.col||'Natural'),acH=finHerr(cur.col||'Natural');
  agg.cortes.forEach(function(pr){var id=invIdPerfil(pr.n,cur.lin);var it=id?invItem(id):null;var nuevos=[];
   var comp=it?((it.retazos||[]).filter(function(r){return !r.ac||r.ac==acP;})):null;
