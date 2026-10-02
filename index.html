@@ -324,25 +324,17 @@ if(!DB.priceHistory)DB.priceHistory=[];
 
 var RECETAS_BASE={
  cor2:{nombre:"Ventana Corrediza 3\"",perfiles:[
-  {n:"Chambrana/Jamba 7825",g:"marco",f:["H","H"],a:76},
-  {n:"Riel Superior 9957",g:"marco",f:"W-38",c:1,a:76},
-  {n:"Riel Inferior 9957",g:"marco",f:"W-38",c:1,a:76},
-  {n:"Cerco Lateral 7847",g:"hoja",f:"H-10",c:2,a:27},
-  {n:"Cerco Traslape 7848",g:"hoja",f:"H-10",c:2,a:35},
-  {n:"Cabezal 7836",g:"hoja",f:"(W/2)-10",c:2,a:25},
-  {n:"Zócalo 7835",g:"hoja",f:"(W/2)-10",c:2,a:25}],
-  vidrio:{fW:"(W/2)-30",fH:"H-35",n:2},
-  herrajes:[{n:"Carretillas",c:4,g:"carretillas",p:45},{n:"Jaladera c/seguro",c:2,g:"jaladeras",p:120},{n:"Felpa (m)",c:6,g:"felpa",p:6},{n:"Seguro central",c:1,g:null,p:60},{n:"Pijas",c:5,g:null,p:1}]},
+  {n:"Jamba 3\" Corredizo",g:"marco",f:["H","H","W-40"],a:76},
+  {n:"Riel 3\" Corredizo",g:"marco",f:["W-40"],c:1,a:76},
+  {n:"Hoja Corrediza 3\"",g:"hoja",f:["H-12","H-12","H-12","H-12","(W/2)-10","(W/2)-10","(W/2)-10","(W/2)-10"],a:25}],
+  vidrio:{fW:"(W/2)-35",fH:"H-35",n:2},
+  herrajes:[{n:"Carretillas",c:4,g:"carretillas",p:32.56},{n:"Jaladera c/seguro",c:2,g:"jaladeras",p:169},{n:"Felpa (m)",c:6,g:"felpa",p:6},{n:"Seguro central",c:1,g:null,p:90},{n:"Pijas",c:5,g:null,p:1.03}]},
  cor20:{nombre:"Ventana Corrediza 2\" (Serie 20)",perfiles:[
-  {n:"Chambrana/Jamba 2\"",g:"marco",f:["H","H"],a:50},
-  {n:"Riel Superior 2\"",g:"marco",f:"W-38",c:1,a:50},
-  {n:"Riel Inferior 2\"",g:"marco",f:"W-38",c:1,a:50},
-  {n:"Cerco Lateral",g:"hoja",f:"H-10",c:2,a:27},
-  {n:"Cerco Traslape",g:"hoja",f:"H-10",c:2,a:28},
-  {n:"Cabezal de hoja",g:"hoja",f:"(W/2)-10",c:2,a:25},
-  {n:"Zócalo",g:"hoja",f:"(W/2)-10",c:2,a:25}],
+  {n:"Jamba 2\" Corredizo",g:"marco",f:["H","H","W-38"],a:50},
+  {n:"Riel 2\" Corredizo",g:"marco",f:["W-38"],c:1,a:50},
+  {n:"Hoja Corrediza 2\"",g:"hoja",f:["H-10","H-10","H-10","H-10","(W/2)-10","(W/2)-10","(W/2)-10","(W/2)-10"],a:25}],
   vidrio:{fW:"(W/2)-30",fH:"H-35",n:2},
-  herrajes:[{n:"Carretillas",c:4,g:"carretillas",p:45},{n:"Jaladera c/seguro",c:1,g:"jaladeras",p:120},{n:"Felpa (m)",c:6,g:"felpa",p:6},{n:"Seguro central",c:1,g:null,p:60},{n:"Pijas",c:5,g:null,p:1}]},
+  herrajes:[{n:"Carretillas",c:4,g:"carretillas",p:18.71},{n:"Jaladera c/seguro",c:1,g:"jaladeras",p:169},{n:"Felpa (m)",c:6,g:"felpa",p:6},{n:"Seguro central",c:1,g:null,p:90},{n:"Pijas",c:5,g:null,p:1.03}]},
  fija:{nombre:"Ventana Fija",perfiles:[
   {n:"Chambrana/Jamba",g:"marco",f:["H","H"],a:76},
   {n:"Cabezal de marco",g:"marco",f:"W-38",c:1,a:76},
@@ -385,10 +377,10 @@ function mkIt(id,n,u,s,min,fins,p){return{id:id,n:n,u:u,st:fins?mkSt(fins,s,min)
 function F(f,W,H){return Math.round(Function('W','H','return '+f)(W,H));}
 let cur=null,draft=null,lastPedido=null,ISO_N=0,off=0,planoIdx=0;
 var SWAP={
- marco:['Chambrana/Jamba 7825','Riel Inferior 9957','Tubo rect. 2"x1"','Zoclo comercial 4"'],
- hoja:['Cerco Lateral 7847','Cerco Traslape 7848','Cabezal 7836','Intermedio','Zoclo Ventana 7835 (1 vena)','Zoclo 2 Venas 7842']};
-var PROFW={'Chambrana/Jamba 7825':76,'Riel Inferior 9957':76,'Tubo rect. 2"x1"':50,'Zoclo comercial 4"':100,
- 'Cerco Lateral 7847':27,'Cerco Traslape 7848':35,'Cabezal 7836':25,'Intermedio':25,'Zoclo Ventana 7835 (1 vena)':25,'Zoclo 2 Venas 7842':25};
+ marco:['Jamba 3" Corredizo','Riel 3" Corredizo','Jamba 2" Corredizo','Riel 2" Corredizo','Perfil Fijo 3"','Perfil Fijo 2"'],
+ hoja:['Hoja Corrediza 3"','Hoja Corrediza 2"','Hoja Batiente 3"','Hoja Batiente 2"']};
+var PROFW={'Jamba 3" Corredizo':76,'Riel 3" Corredizo':76,'Jamba 2" Corredizo':50,'Riel 2" Corredizo':50,
+ 'Perfil Fijo 3"':76,'Perfil Fijo 2"':50,'Hoja Corrediza 3"':25,'Hoja Corrediza 2"':25,'Hoja Batiente 3"':25,'Hoja Batiente 2"':25};
 function tagEst(e){return e=='En Proceso'?'t-orange':(e=='Pendiente'?'t-blue':(e=='Rechazada'?'t-red':'t-green'));}
 function prodName(it){return DB.recetas[it.tip]?DB.recetas[it.tip].nombre:it.tip;}
 function normProd(c){if(!c)return{tip:'cor2',lin:'L3',W:1800,H:1200,col:'Natural',zoc:'V',conf:'2H',vidTxt:'Claro 6mm'};
