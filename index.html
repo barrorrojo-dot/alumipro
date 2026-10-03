@@ -623,14 +623,15 @@ function kitItems(prod){var W=prod.W,H=prod.H,R=DB.recetas[prod.tip]||DB.recetas
   var pu=(r.g=='marco')?bM:bH;
   return{n:r.n,d:r.d||(r.lens.length+' pz: '+r.lens.join(' + ')+' mm'),costo:mTot*pu,pUnit:pu,g:r.g,len:r.lens[0],lens:r.lens,cant:r.lens.length,a:r.a};});
  var vid=(DB.inv.vidrios||[]).find(function(v){return v.id==prod.vid;})||{p:380,n:'Claro 6mm',id:'v_claro6'};
- var vidM2=0;if(R.vidrio){var vw=F(R.vidrio.fW,W,H)-((prod.zoc=='P')?5:0),vh=F(R.vidrio.fH,W,H);vidM2=vw*vh/1e6*R.vidrio.n;
+  var vidM2=0;if(R.vidrio){var vw=F(R.vidrio.fW,W,H)-((prod.zoc=='P')?5:0),vh=F(R.vidrio.fH,W,H);vidM2=vw*vh/1e6*R.vidrio.n;
   items.push({n:'Vidrio '+vid.n+' ('+vw+'×'+vh+'mm)',d:R.vidrio.n+' pz · '+vidM2.toFixed(2)+' m²',costo:vidM2*vid.p,vidM2:vidM2,g:'vidrio',vidId:vid.id});}
  var hojaA=H-10,hojaW=(W/2)-10,felpaM=Math.round(2*(hojaA+hojaW)*2/1000*1.1)||0,perimM=Math.round(2*(W+H)/1000);
  (R.herrajes||[]).forEach(function(h){var c=h.c;
   if(/carret/.test(h.n)&&prod.conf)c=(prod.conf=='2H')?4:2;
   c=(c=='felpa')?felpaM:((c=='perim')?perimM:c);
   items.push({n:h.n,d:c+(String(h.n).includes('(m)')?' m':' pz'),costo:c*h.p,un:c,g:'herr'});});
- if(prod.zoc=='P')items.forEach(function(it){if(/Zoclo .*\(1 vena\)/.test(it.n))it.n=it.n.replace('(1 vena)','(2 venas)');});                       
+ if(prod.zoc=='P')items.forach(function(it){if(/Zoclo .*\(1 vena\)/.test(it.n))it.n=it.n.replace('(1 vena)','(2 venas)');});                       
+  if(prod.zoc=='P')items.forEach(function(it){if(/Zoclo .*\(1 vena\)/.test(it.n))it.n=it.n.replace('(1 vena)','(2 venas)');});
  return{items:items,vidM2:vidM2,area:(W*H/1e6)};}
 function itemSubtotal(it){var mat=(it.kitRows||[]).reduce(function(a,r){return a+r.costo;},0);
  var mo=(it.area||0)*DB.precios.manoObraM2;var venta=(mat+mo)*(1+DB.precios.margen);var iva=venta*DB.precios.iva;
