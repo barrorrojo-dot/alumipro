@@ -378,9 +378,10 @@ function F(f,W,H){return Math.round(Function('W','H','return '+f)(W,H));}
 let cur=null,draft=null,lastPedido=null,ISO_N=0,off=0,planoIdx=0;
 var SWAP={
  marco:['Jamba 3" Corredizo','Riel 3" Corredizo','Jamba 2" Corredizo','Riel 2" Corredizo','Perfil Fijo 3"','Perfil Fijo 2"'],
- hoja:['Hoja Corrediza 3"','Hoja Corrediza 2"','Hoja Batiente 3"','Hoja Batiente 2"']};
+ hoja:['Hoja Corrediza 3"','Hoja Corrediza 2"','Hoja Batiente 3"','Hoja Batiente 2"','Cabezal 3"','Cabezal 2"','Zoclo 3" (1 vena)','Zoclo 3" (2 venas)','Zoclo 2" (1 vena)','Zoclo 2" (2 venas)']};
 var PROFW={'Jamba 3" Corredizo':76,'Riel 3" Corredizo':76,'Jamba 2" Corredizo':50,'Riel 2" Corredizo':50,
- 'Perfil Fijo 3"':76,'Perfil Fijo 2"':50,'Hoja Corrediza 3"':25,'Hoja Corrediza 2"':25,'Hoja Batiente 3"':25,'Hoja Batiente 2"':25};
+ 'Perfil Fijo 3"':76,'Perfil Fijo 2"':50,'Hoja Corrediza 3"':25,'Hoja Corrediza 2"':25,'Hoja Batiente 3"':25,'Hoja Batiente 2"':25,
+ 'Cabezal 3"':25,'Cabezal 2"':25,'Zoclo 3" (1 vena)':25,'Zoclo 3" (2 venas)':25,'Zoclo 2" (1 vena)':25,'Zoclo 2" (2 venas)':25};
 function tagEst(e){return e=='En Proceso'?'t-orange':(e=='Pendiente'?'t-blue':(e=='Rechazada'?'t-red':'t-green'));}
 function prodName(it){return DB.recetas[it.tip]?DB.recetas[it.tip].nombre:it.tip;}
 function normProd(c){if(!c)return{tip:'cor2',lin:'L3',W:1800,H:1200,col:'Natural',zoc:'V',conf:'2H',vidTxt:'Claro 6mm'};
@@ -622,13 +623,14 @@ function kitItems(prod){var W=prod.W,H=prod.H,R=DB.recetas[prod.tip]||DB.recetas
   var pu=(r.g=='marco')?bM:bH;
   return{n:r.n,d:r.d||(r.lens.length+' pz: '+r.lens.join(' + ')+' mm'),costo:mTot*pu,pUnit:pu,g:r.g,len:r.lens[0],lens:r.lens,cant:r.lens.length,a:r.a};});
  var vid=(DB.inv.vidrios||[]).find(function(v){return v.id==prod.vid;})||{p:380,n:'Claro 6mm',id:'v_claro6'};
- var vidM2=0;if(R.vidrio){var vw=F(R.vidrio.fW,W,H),vh=F(R.vidrio.fH,W,H);vidM2=vw*vh/1e6*R.vidrio.n;
+ var vidM2=0;if(R.vidrio){var vw=F(R.vidrio.fW,W,H)-((prod.zoc=='P')?5:0),vh=F(R.vidrio.fH,W,H);vidM2=vw*vh/1e6*R.vidrio.n;
   items.push({n:'Vidrio '+vid.n+' ('+vw+'×'+vh+'mm)',d:R.vidrio.n+' pz · '+vidM2.toFixed(2)+' m²',costo:vidM2*vid.p,vidM2:vidM2,g:'vidrio',vidId:vid.id});}
  var hojaA=H-10,hojaW=(W/2)-10,felpaM=Math.round(2*(hojaA+hojaW)*2/1000*1.1)||0,perimM=Math.round(2*(W+H)/1000);
  (R.herrajes||[]).forEach(function(h){var c=h.c;
   if(/carret/.test(h.n)&&prod.conf)c=(prod.conf=='2H')?4:2;
   c=(c=='felpa')?felpaM:((c=='perim')?perimM:c);
   items.push({n:h.n,d:c+(String(h.n).includes('(m)')?' m':' pz'),costo:c*h.p,un:c,g:'herr'});});
+ if(prod.zoc=='P')items.forEach(function(it){if(/Zoclo .*\(1 vena\)/.test(it.n))it.n=it.n.replace('(1 vena)','(2 venas)');});                       
  return{items:items,vidM2:vidM2,area:(W*H/1e6)};}
 function itemSubtotal(it){var mat=(it.kitRows||[]).reduce(function(a,r){return a+r.costo;},0);
  var mo=(it.area||0)*DB.precios.manoObraM2;var venta=(mat+mo)*(1+DB.precios.margen);var iva=venta*DB.precios.iva;
@@ -702,8 +704,9 @@ function flattenItems(){var out=[];(cur.items||[]).forEach(function(it){(it.kitR
  out.push({n:r.n,d:it.cant+'× '+r.d,costo:r.costo*it.cant});});});return out;}
 function aggregate(){var cm={},vid=0,hm={};
  (cur.items||[]).forEach(function(it){(it.kitRows||[]).forEach(function(r){
-  if(r.g=='marco'||r.g=='hoja'){if(!cm[r.n])cm[r.n]={n:r.n,a:r.a||30,g:r.g,cuts:[]};
-   for(var q=0;q<it.cant;q++)(r.lens||[]).forEach(function(L){cm[r.n].cuts.push(L);});}
+    if(r.g=='marco'||r.g=='hoja'){var idp=invIdPerfil(r.n,cur.lin);var key=idp||r.n;var disp=idp?((invItem(idp)||{}).n||r.n):r.n;
+   if(!cm[key])cm[key]={n:disp,a:r.a||30,g:r.g,cuts:[]};
+   for(var q=0;q<it.cant;q++)(r.lens||[]).forEach(function(L){cm[key].cuts.push(L);});}
   else if(r.g=='vidrio'){vid+=(r.vidM2||0)*it.cant;}
   else{hm[r.n]=(hm[r.n]||0)+(r.un||0)*it.cant;}});});
  return{cortes:Object.values(cm),vidM2:vid,herr:Object.keys(hm).map(function(k){return{n:k,un:hm[k]};})};}
