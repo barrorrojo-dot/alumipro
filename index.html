@@ -117,16 +117,23 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
  <p style="font-size:12px;color:#64748B;text-align:center">Desliza la hoja para simular apertura.</p>
  <button class="btn" onclick="addProducto()">＋ Agregar producto a la cotización</button>
 </div>
-<div class="card"><h3>🛒 Productos en esta cotización</h3><div id="prodList"></div>
+<div class="card"><h3>🛒 Productos en esta cotización</h3><div id="prodList"></div></div>
+<div class="card">
+ <details open>
+  <summary style="font-weight:800;font-size:15px;cursor:pointer;margin:4px 0">🔧 Kit de material del producto actual (perfiles que se usarán — visible antes de proponer)</summary>
+  <div id="kitTabla"></div>
+  <h4>➕ Agregar perfiles/herrajes extra al kit</h4>
+  <div class="row"><input id="exN" placeholder="Extra (perfil/herraje)"><input id="exC" type="number" placeholder="Cant" style="max-width:80px">
+  <input id="exP" type="number" placeholder="$/pz" style="max-width:90px"><button class="btn small" onclick="addExtra()">＋ Agregar</button></div>
+  <div id="totales" style="font-size:12px;color:#64748B"></div>
+ </details>
+</div>
+<div class="card">
  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
   <b>TOTAL ESTIMADO:</b><span id="totGlow" style="font-size:24px;font-weight:800;color:#16A34A">$0.00</span></div>
  <button class="btn orange" onclick="guardarCot()">CREAR PROPUESTA</button>
  <button class="btn small" onclick="go('cots')">📋 Ver Historial</button>
 </div>
-<div class="card"><h3>Kit del producto actual (selector cambia perfil, ✖ elimina, abajo agrega)</h3><div id="kitTabla"></div>
- <div class="row"><input id="exN" placeholder="Extra (perfil/herraje)"><input id="exC" type="number" placeholder="Cant" style="max-width:80px">
- <input id="exP" type="number" placeholder="$/pz" style="max-width:90px"><button class="btn small" onclick="addExtra()">＋ Agregar</button></div>
- <div id="totales" style="font-size:12px;color:#64748B"></div></div>
 </div>
 
 <div id="taller" class="screen"><div class="card"><h2 id="tTitulo"></h2>
