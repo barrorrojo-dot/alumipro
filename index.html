@@ -390,10 +390,10 @@ function F(f,W,H){return Math.round(Function('W','H','return '+f)(W,H));}
 let cur=null,draft=null,lastPedido=null,ISO_N=0,off=0,planoIdx=0;
 var SWAP={
  marco:['Jamba 3" Corredizo','Riel 3" Corredizo','Jamba 2" Corredizo','Riel 2" Corredizo','Perfil Fijo 3"','Perfil Fijo 2"'],
- hoja:['Hoja Corrediza 3"','Hoja Corrediza 2"','Hoja Batiente 3"','Hoja Batiente 2"','Cabezal 3"','Cabezal 2"','Zoclo 3" (1 vena)','Zoclo 3" (2 venas)','Zoclo 2" (1 vena)','Zoclo 2" (2 venas)']};
-var PROFW={'Jamba 3" Corredizo':76,'Riel 3" Corredizo':76,'Jamba 2" Corredizo':50,'Riel 2" Corredizo':50,
- 'Perfil Fijo 3"':76,'Perfil Fijo 2"':50,'Hoja Corrediza 3"':25,'Hoja Corrediza 2"':25,'Hoja Batiente 3"':25,'Hoja Batiente 2"':25,
- 'Cabezal 3"':25,'Cabezal 2"':25,'Zoclo 3" (1 vena)':25,'Zoclo 3" (2 venas)':25,'Zoclo 2" (1 vena)':25,'Zoclo 2" (2 venas)':25};
+ hoja:['Cerco lateral','Cerco traslape','Cabezal de hoja','Zoclo de hoja (1 vena)','Zoclo de hoja (2 venas)','Hoja Corrediza 3"','Hoja Corrediza 2"','Hoja Batiente 3"','Hoja Batiente 2"']};
+var PROFW={'Jamba 3" Corredizo':76,'Riel 3" Corredizo':76,'Jamba 2" Corredizo':50,'Riel 2" Corredizo':50,'Perfil Fijo 3"':76,'Perfil Fijo 2"':50,
+ 'Cerco lateral':27,'Cerco traslape':35,'Cabezal de hoja':25,'Zoclo de hoja (1 vena)':25,'Zoclo de hoja (2 venas)':25,
+ 'Hoja Corrediza 3"':25,'Hoja Corrediza 2"':25,'Hoja Batiente 3"':25,'Hoja Batiente 2"':25};
 function tagEst(e){return e=='En Proceso'?'t-orange':(e=='Pendiente'?'t-blue':(e=='Rechazada'?'t-red':'t-green'));}
 function prodName(it){return DB.recetas[it.tip]?DB.recetas[it.tip].nombre:it.tip;}
 function normProd(c){if(!c)return{tip:'cor2',lin:'L3',W:1800,H:1200,col:'Natural',zoc:'V',conf:'2H',vidTxt:'Claro 6mm'};
