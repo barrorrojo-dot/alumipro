@@ -330,19 +330,24 @@ if(!DB.proveedores)DB.proveedores=[];
 if(!DB.priceHistory)DB.priceHistory=[];
 
 var RECETAS_BASE={
- cor2:{nombre:"Ventana Corrediza 3\"",perfiles:[
+  cor2:{nombre:"Ventana Corrediza 3\"",perfiles:[
   {n:"Jamba 3\" Corredizo",g:"marco",f:["H","H","W-40"],a:76},
   {n:"Riel 3\" Corredizo",g:"marco",f:["W-40"],c:1,a:76},
-  {n:"Hoja Corrediza 3\"",g:"hoja",f:["H-12","H-12","H-12","H-12","(W/2)-10","(W/2)-10","(W/2)-10","(W/2)-10"],a:25}],
+  {n:"Cerco lateral",g:"hoja",f:["H-12","H-12"],a:27},
+  {n:"Cerco traslape",g:"hoja",f:["H-12","H-12"],a:35},
+  {n:"Cabezal de hoja",g:"hoja",f:["(W/2)-10","(W/2)-10"],a:25},
+  {n:"Zoclo de hoja (1 vena)",g:"hoja",f:["(W/2)-10","(W/2)-10"],a:25,z:1}],
   vidrio:{fW:"(W/2)-35",fH:"H-35",n:2},
   herrajes:[{n:"Carretillas",c:4,g:"carretillas",p:32.56},{n:"Jaladera c/seguro",c:2,g:"jaladeras",p:169},{n:"Felpa (m)",c:6,g:"felpa",p:6},{n:"Seguro central",c:1,g:null,p:90},{n:"Pijas",c:5,g:null,p:1.03}]},
  cor20:{nombre:"Ventana Corrediza 2\" (Serie 20)",perfiles:[
   {n:"Jamba 2\" Corredizo",g:"marco",f:["H","H","W-38"],a:50},
   {n:"Riel 2\" Corredizo",g:"marco",f:["W-38"],c:1,a:50},
-  {n:"Hoja Corrediza 2\"",g:"hoja",f:["H-10","H-10","H-10","H-10","(W/2)-10","(W/2)-10","(W/2)-10","(W/2)-10"],a:25}],
+  {n:"Cerco lateral",g:"hoja",f:["H-10","H-10"],a:27},
+  {n:"Cerco traslape",g:"hoja",f:["H-10","H-10"],a:35},
+  {n:"Cabezal de hoja",g:"hoja",f:["(W/2)-10","(W/2)-10"],a:25},
+  {n:"Zoclo de hoja (1 vena)",g:"hoja",f:["(W/2)-10","(W/2)-10"],a:25,z:1}],
   vidrio:{fW:"(W/2)-30",fH:"H-35",n:2},
-  herrajes:[{n:"Carretillas",c:4,g:"carretillas",p:18.71},{n:"Jaladera c/seguro",c:1,g:"jaladeras",p:169},{n:"Felpa (m)",c:6,g:"felpa",p:6},{n:"Seguro central",c:1,g:null,p:90},{n:"Pijas",c:5,g:null,p:1.03}]},
- fija:{nombre:"Ventana Fija",perfiles:[
+  herrajes:[{n:"Carretillas",c:4,g:"carretillas",p:18.71},{n:"Jaladera c/seguro",c:1,g:"jaladeras",p:169},{n:"Felpa (m)",c:6,g:"felpa",p:6},{n:"Seguro central",c:1,g:null,p:90},{n:"Pijas",c:5,g:null,p:1.03}]}, fija:{nombre:"Ventana Fija",perfiles:[
   {n:"Chambrana/Jamba",g:"marco",f:["H","H"],a:76},
   {n:"Cabezal de marco",g:"marco",f:"W-38",c:1,a:76},
   {n:"Zócalo de marco",g:"marco",f:"W-38",c:1,a:76}],
