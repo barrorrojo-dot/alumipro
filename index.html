@@ -679,12 +679,7 @@ function addExtra(){if(!exN.value)return;draft.kitRows.push({n:exN.value,d:(+exC
 function renderDraftKit(){var rows=(draft&&draft.kitRows)||[];
  var html='<table><tr><th>Perfil / Concepto</th><th>Detalle</th><th>Costo</th><th></th></tr>';
  rows.forEach(function(r,i){
-  var opts=[];
-  if(r.g=='marco')opts=SWAP.marco;else if(r.g=='hoja')opts=SWAP.hoja;
-  else if(r.g=='vidrio')opts=DB.inv.vidrios.map(function(v){return v.n;});
-  else if(r.g=='herr')opts=DB.inv.herrajes.map(function(h){return h.n;});
-  var sel=opts.length?'<select class="mini" onchange="swapRow('+i+',this.value)">'+opts.map(function(o){return '<option'+(o==r.n?' selected':'')+'>'+o+'</option>';}).join('')+'</select> ':'';
-  html+='<tr><td>'+sel+r.n+'</td><td>'+r.d+'</td><td>$'+r.costo.toFixed(0)+'</td><td><button class="btn del" onclick="delRow('+i+')">✖</button></td></tr>';});
+    html+='<tr><td><b>'+r.n+'</b></td><td>'+r.d+'</td><td>$'+r.costo.toFixed(0)+'</td><td><button class="btn del" onclick="delRow('+i+')">✖</button></td></tr>';});
  html+='</table>';
  document.getElementById('kitTabla').innerHTML=html;
  var t=itemSubtotal(draft||{kitRows:[]});
