@@ -120,7 +120,7 @@ nav button.on{color:var(--blue);font-weight:700;border-top:3px solid var(--blue)
 <div class="card"><h3>🛒 Productos en esta cotización</h3><div id="prodList"></div></div>
 <div class="card">
  <details open>
-  <summary style="font-weight:800;font-size:15px;cursor:pointer;margin:4px 0">🔧 Kit de material del producto actual (perfiles que se usarán — visible antes de proponer)</summary>
+  <summary style="font-weight:800;font-size:15px;cursor:pointer;margin:4px 0">🔧 Kit de material del producto actual</summary>
   <div id="kitTabla"></div>
   <h4>➕ Agregar perfiles/herrajes extra al kit</h4>
   <div class="row"><input id="exN" placeholder="Extra (perfil/herraje)"><input id="exC" type="number" placeholder="Cant" style="max-width:80px">
@@ -653,11 +653,12 @@ function calc(){if(!cW.value)return;off=0;  if(draft){draft.total=itemSubtotal(d
  var tipName=cTip.options[cTip.selectedIndex].text;
  var serName=cLin.options[cLin.selectedIndex].text;
  document.getElementById('cotLineTitle').textContent=tipName.toUpperCase()+' · '+serName.toUpperCase();
- var prod=formProduct();
- var keep=draft?draft.kitRows:null;
+  var prod=formProduct();
+ var same=draft&&draft.tip==prod.tip&&draft.lin==prod.lin&&draft.conf==prod.conf&&draft.zoc==prod.zoc&&draft.col==prod.col&&draft.vid==prod.vid&&draft.W==prod.W&&draft.H==prod.H;
+ var keep=same?draft.kitRows:null;
  prod.kitRows=(keep&&keep.length)?keep:kitItems(prod).items.map(function(r){return Object.assign({},r);});
  draft=prod;
- render3d(draft);renderProducts();renderTotals();}
+ render3d(draft);renderProducts();renderTotals();renderDraftKit();}
 function priceOf(r){
  if(r.pUnit)return r.pUnit;
  if(r.g=='marco')return DB.precios.marcoM;
